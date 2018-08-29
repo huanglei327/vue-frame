@@ -181,12 +181,12 @@ export default {
       }
       localStorage.setItem("userInfo", JSON.stringify(userinfo))
     }
-    // const userinfo = {
-    //   "id": 1,
-    //   "userName": '管理员',
-    //   "token": '456',
-    // }
-    // localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    const userinfo = {
+      "id": 1,
+      "userName": '管理员',
+      "token": '456',
+    }
+    localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
   methods: {
     kindToggle: function (id) {
