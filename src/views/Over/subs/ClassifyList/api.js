@@ -1,5 +1,5 @@
 import { get, post } from '@/utils/httpUtils/fetch.js'
-export function getTaInfo(decisionId,userName) {
-  const apiName = '/m_resolution/query_resolution?decisionId='+decisionId+'&userName='+userName
-  return get(apiName)
+export function getTaInfo(param) {
+  const apiName = '/m_resolution/query_resolution'
+  return post(apiName, param)
 }

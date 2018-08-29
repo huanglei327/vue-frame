@@ -10,6 +10,7 @@ body {
   background: #f2f5f7;
   -webkit-overflow-scrolling: touch;
   font-size:14px;
+  font-family:'Microsoft YaHei';
 }
 
 .pd5{
@@ -294,4 +295,27 @@ body {
 }
 .van-nav-bar .van-icon{
   color: #666;
+}
+.imgX {
+	position: absolute;
+	right: 0;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+}
+.up-img-ul li {
+	position: relative;
+}
+.div-ff {
+	padding-top: 5px;
+	border-top: 1px solid #e5e5e5;
+	color: #999;
+}
+.no-data{
+  display: block;
+    text-align: center;
+    padding: 20px;
+}
+.van-popup{
+  border-radius: 5px;
 }

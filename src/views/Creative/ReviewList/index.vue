@@ -3,16 +3,16 @@
         <van-tabs v-model="active" sticky @click="tabsClick">
             <van-tab title="未发起">
                 <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="300">
-                    <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId)">
+                    <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId)">
                         <div class="d-c-title">
                             <van-row>
-                                <van-col span="20" class="title"> {{item.decisionName}}</van-col>
+                                <van-col span="20" class="title"> {{item.resolutionName}}</van-col>
                                 <van-col span="4" class="status">{{item.statusStr}}</van-col>
                             </van-row>
                         </div>
-                        <div class="sizecor d-c-content">{{item.decisionContent}}</div>
+                        <div class="sizecor d-c-content">{{item.resolutionContent}}</div>
                         <van-row class="sizecor">
-                            <van-col span="8">决策人:{{item.createUser}}</van-col>
+                            <van-col span="8">提案人:{{item.createUser}}</van-col>
                             <van-col span="16">申请时间:{{item.createTime}}</van-col>
                         </van-row>
                     </van-cell>
@@ -22,16 +22,16 @@
             </van-tab>
             <van-tab title="已发起">
                 <van-list v-model="loading1" :finished="finished1" @load="onLoad1" :offset="300">
-                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.decisionId)">
+                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId)">
                         <div class="d-c-title">
                             <van-row>
-                                <van-col span="20" class="title"> {{item.decisionName}}</van-col>
+                                <van-col span="20" class="title"> {{item.resolutionName}}</van-col>
                                 <van-col span="4" class="status">{{item.statusStr}}</van-col>
                             </van-row>
                         </div>
-                        <div class="sizecor d-c-content">{{item.decisionContent}}</div>
+                        <div class="sizecor d-c-content">{{item.resolutionContent}}</div>
                         <van-row class="sizecor">
-                            <van-col span="8">决策人:{{item.createUser}}</van-col>
+                            <van-col span="8">提案人:{{item.createUser}}</van-col>
                             <van-col span="16">申请时间:{{item.createTime}}</van-col>
                         </van-row>
                     </van-cell>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { getDecisionMaking } from './api'
+import { getDecisionMaking,getMyCreactive } from './api'
 export default {
     data() {
         return {
@@ -69,19 +69,6 @@ export default {
         onLoad() {
             const that = this
             setTimeout(() => {
-                // var num = 1
-                // const objlist = JSON.parse(localStorage.getItem("jclocal"))
-                // for (let i = 0; i < objlist.length; i++) {
-                //   if ((that.page * that.pagesize) > i || i < (that.page + 1) * that.pagesize) {
-                //     that.list.push(objlist[i])
-                //     num = num +1
-                //   }
-                // }
-                // this.loading = false;
-                // console.log(num)
-                // if (num < that.pagesize) {
-                //   this.finished = true;
-                // }
                 const callback = res => {
                     console.log(res)
                     if (res.errcode === 0) {
@@ -92,9 +79,9 @@ export default {
                 }
                 const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    makType:1
+                    resolutionType:0
                 }
-                getDecisionMaking(param).then(callback)
+                getMyCreactive(param).then(callback)
                 this.loading = false
                 this.finished = true
             }, 500)
@@ -111,9 +98,9 @@ export default {
                 }
                  const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    makType:2
+                    resolutionType:0
                 }
-                getDecisionMaking(param).then(callback)
+                getMyCreactive(param).then(callback)
                 this.loading1 = false
                 this.finished1 = true
             }, 500)
@@ -137,16 +124,14 @@ export default {
              this.$router.push({
                 path: "/DecisionDetails",
                 query: {
-                    decisionId: decisionId,
-                    
+                    decisionId: decisionId
                 }
             })
         },
-        goJCDetails(decisionId,resolutionId){
+        goJCDetails(resolutionId){
               this.$router.push({
                 path: "/CreativeDetails",
                 query: {
-                    decisionId: decisionId,
                     resolutionId:resolutionId
                 }
             })
@@ -154,8 +139,7 @@ export default {
     }
 }
 </script>
-
- <style lang="less">
+<style lang="less">
 .d-c-title {
 	overflow: hidden;
 	text-overflow: ellipsis;

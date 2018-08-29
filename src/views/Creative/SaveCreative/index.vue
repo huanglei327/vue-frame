@@ -1,8 +1,7 @@
 <template>
     <div>
         <van-cell-group>
-            <van-field required label="创意提案名称" type="textarea" placeholder="请录入创意提案名称,不超过30个字" rows="1"
-             autosize v-model="status.cyName" :error-message="status.cyName_err" />
+            <van-field required label="创意提案名称" type="textarea" placeholder="请录入创意提案名称,不超过30个字" rows="1" autosize v-model="status.cyName" :error-message="status.cyName_err" />
             <van-field required label="创意提案内容" type="textarea" placeholder="请录入创意提案内容，不超过200字" rows="4" autosize v-model="status.cyContent" :error-message="status.cyContent_err" />
             <!-- <van-cell is-link @click="showspeoplePopup" :value="status.cuserName">
                 <template slot="title">
@@ -11,6 +10,27 @@
                     <div class="van-field__error-message errmsg">{{status.cuserName_err}}</div>
                 </template>
             </van-cell> -->
+            <div>
+                <div style="width:100%;overflow:hidden;">
+                    <ul class="up-img-ul">
+                        <li>
+                            <div style="padding-top:20px;">
+                                <van-uploader :after-read="onRead" accept :disabled="imgdisabled">
+                                    <van-icon name="photograph" class="font28" />
+                                </van-uploader>
+                                <div class="font12">上传图片</div>
+                            </div>
+                        </li>
+                        <li v-for="(item,index) in imglist" :key="index">
+                            <div class="imgX">
+                                <van-icon name="clear" @click="clearImg(item)" />
+                            </div>
+                            <img width="70px" height="90px" :src="item" @click="imgPreview(item)">
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
         </van-cell-group>
         <div class="div-btn">
             <van-button type="primary" size="newlarge" @click="btnGoCy">发起创意提案
@@ -21,7 +41,7 @@
 </template>
 
 <script>
-import { SaveTA } from './api'
+import { SaveTA,UpImg } from './api'
 import speopleList from './subs/SpeopleList/index.vue'
 export default {
     data() {
@@ -45,7 +65,10 @@ export default {
                 SearchListPopup: false,
                 speopleListTitle: '创意评审人',
                 speopleListPopup: false,
-            }
+                pictureNames: []
+            },
+            imgdisabled: false,
+            imglist: []
         }
     },
     components: {
@@ -66,6 +89,7 @@ export default {
                 decisionId: that.$route.query.decisionId,
                 resolutionName: that.status.cyName,
                 resolutionContent: that.status.cyContent,
+                pictureNames: that.status.pictureNames,
                 createUser: that.$common.getUserInfo("userName")
             }
             const callback = res => {
@@ -90,12 +114,44 @@ export default {
         showspeoplePopup() {
             console.log('----')
             this.status.speopleListPopup = true
+        },
+        clearImg(item) {
+            const that = this;
+            for (var i = 0; i < that.imglist.length; i++) {
+                if (that.imglist[i] == item) that.imglist.splice(i, 1);
+            }
+        },
+        imgPreview(item) {
+            const that = this;
+            ImagePreview(that.imglist);
+        },
+        onRead(file) {
+            const that = this;
+            //数组
+            if (Array.isArray(file)) {
+            } else {
+                //对象
+                const callback = res => {
+                    if (res.errcode === 0) {
+                        that.$toast.success({
+                            message: "上传成功",
+                            duration: 2000
+                        });
+                        that.imglist.push(file.content);
+                        that.status.pictureNames += res.pictureUrl + ',';
+                    }
+                };
+                const param = {
+                    base64String: file.content
+                };
+
+                UpImg(param).then(callback);
+            }
         }
-
     }
-
 }
 </script>
 
-<style>
+
+<style lang="less">
 </style>

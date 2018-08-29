@@ -4,9 +4,9 @@ export function getName() {
   return get(apiName)
 }
 
-export function getDecisionMaking(decisionId,userName) {
-  const apiName = '/m_decisionMaking/query_decisionMaking?decisionId='+decisionId+'&userName='+userName
-  return get(apiName)
+export function getDecisionMaking(param) {
+  const apiName = '/m_decisionMaking/query_decisionMaking'
+  return post(apiName,param)
 }
 
 

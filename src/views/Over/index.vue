@@ -1,44 +1,22 @@
 <template>
     <div>
         <van-cell-group>
-            <van-field required label="决策名称" :value="list.decisionName"
-            type="textarea"  rows="1" autosize disabled />
-             <van-field
-             v-model="list.decisionType"
-                required
-                label="类型"
-                disabled
-            />
-            <van-field required label="决策内容" :value="list.decisionContent"  
-            type="textarea"  rows="1" autosize  disabled/>
-            <van-field
-             v-model="list.decisionProposer"
-                required
-                label="创意提案人"
-                disabled
-            />
-             <van-field
-             v-model="list.decisionAssessor"
-                required
-                label="创意评审人"
-                disabled
-            />
+            <van-field required label="决策名称" :value="list.decisionName" type="textarea" rows="1" autosize disabled />
+            <van-field v-model="list.decisionType" required label="类型" disabled />
+            <van-field required label="决策内容" :value="list.decisionContent" type="textarea" rows="1" autosize disabled/>
+            <van-field v-model="list.decisionProposer" required label="创意提案人" disabled />
+            <van-field v-model="list.decisionAssessor" required label="创意评审人" disabled />
         </van-cell-group>
         <div style="margin-top:10px;"></div>
         <van-cell-group>
-             <van-cell  is-link @click="showspeoplePopup" :value="status.infoName">
+            <van-cell is-link @click="showspeoplePopup" :value="status.infoName">
                 <template slot="title">
                     <span class="van-cell-text">
                         <span class="cell-s-c-red">*</span>最优创意提案</span>
-                        <div class="van-field__error-message errmsg">{{status.infoName_err}}</div>
+                    <div class="van-field__error-message errmsg">{{status.infoName_err}}</div>
                 </template>
             </van-cell>
-            <van-field required label="最终结案"  type="textarea"
-             placeholder="请录入最优创意提案,不超过30个字" rows="1" 
-             autosize 
-             v-model="status.finalResolutionName"
-             :error-message="status.finalResolutionName_err"
-             />
+            <van-field required label="最终结案" type="textarea" placeholder="请录入最优创意提案,不超过30个字" rows="1" autosize v-model="status.finalResolutionName" :error-message="status.finalResolutionName_err" />
         </van-cell-group>
 
         <div class="div-btn">
@@ -50,41 +28,46 @@
 </template>
 
 <script>
-import {getDecisionMaking,closeDecisionMaking } from './api'
+import { getDecisionMaking, closeDecisionMaking } from './api'
 import classifyList from './subs/ClassifyList/index.vue'
 export default {
     data() {
         return {
-            reamrk:"新技术革命给我们带来了千载难逢的机遇，中国的制造业如果把握机会？我们的企业该怎么样通过数字化实现转型升级",
+            reamrk: "新技术革命给我们带来了千载难逢的机遇，中国的制造业如果把握机会？我们的企业该怎么样通过数字化实现转型升级",
             value: '1',
             checked: true,
             status: {
                 infoId: 0,
                 infoName: '',
-                infoName_err:'',
-                finalResolutionName:'',
-                finalResolutionName_err:'',
+                infoName_err: '',
+                finalResolutionName: '',
+                finalResolutionName_err: '',
                 classifyPopup: false,
-                classifyTitle:'最优创意提案',
-                decisionId:0
+                classifyTitle: '最优创意提案',
+                decisionId: 0
             },
-            list:{}
+            list: {}
         }
     },
     components: {
         classifyList,
     },
     created() {
-         this.status.decisionId = this.$route.query.decisionId
+        this.status.decisionId = this.$route.query.decisionId
 
-         const that =this 
-         const callback = res=>{
-             console.log(res)
-             if(res.errcode === 0){
+        const that = this
+        const callback = res => {
+            console.log(res)
+            if (res.errcode === 0) {
                 that.list = res.data[0]
-             }
-         }
-         getDecisionMaking(this.$route.query.decisionId,that.$common.getUserInfo("userName")).then(callback)
+            }
+        }
+        const param = {
+            decisionId: this.$route.query.decisionId,
+            userName: that.$common.getUserInfo("userName"),
+            makType: 0
+        }
+        getDecisionMaking(param).then(callback)
     },
     methods: {
         btnGoJC() {
@@ -96,15 +79,14 @@ export default {
         showPeople() {
             this.status.SearchListPopup = true
         },
-        showspeoplePopup(){
+        showspeoplePopup() {
             console.log('----')
-          this.status.classifyPopup = true
+            this.status.classifyPopup = true
         },
-        btnGoOver(){
+        btnGoOver() {
             console.log(this.$common.MathRand(5))
             const that = this
             let checklist = [
-               
                 { domId: 'finalResolutionName', msg: '最终结案', valiType: '' },
                 { domId: 'jcContent', msg: '请选择决策内容', valiType: '' },
             ]
@@ -113,9 +95,9 @@ export default {
                 return
             }
             const DecisionMaking = {
-                decisionId :that.$route.query.decisionId,
-                finalResolutionName:that.status.finalResolutionName,
-                updateUser:that.$common.getUserInfo("userName")
+                decisionId: that.$route.query.decisionId,
+                finalResolutionName: that.status.finalResolutionName,
+                updateUser: that.$common.getUserInfo("userName")
             }
             const callback = res => {
                 if (res.errcode === 0) {

@@ -4,8 +4,13 @@ export function getName() {
   return get(apiName)
 }
 
- 
-export function SaveJC(param){
+
+export function SaveJC(param) {
   const apiName = '/m_decisionMaking/addDecisionMaking'
-   return post(apiName,param)
+  return post(apiName, param)
+}
+
+export function UpImg(param) {
+  const apiName = '/m_decisionMaking/upload_picture'
+  return post(apiName, param)
 }

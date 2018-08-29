@@ -12,6 +12,8 @@ import Remind from '../views/Creative/Remind/index.vue'
 import Over from '../views/Over/index.vue'
 import DecisionDetails from '../views/Decision/DecisionDetails/index.vue'
 import BindUser from '../views/BindUser/index.vue'
+import ReviewList from '../views/Creative/ReviewList/index.vue'
+
 
 Vue.use(Router)
 
@@ -112,6 +114,14 @@ export default new Router({
       component: Remind,
       meta:{
         title:'提案提醒'
+      }
+    },
+    {
+      path: '/ReviewList',
+      name: 'ReviewList',
+      component: ReviewList,
+      meta:{
+        title:'创意评审'
       }
     }
   ]

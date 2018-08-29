@@ -16,11 +16,11 @@ export default {
     }
   },
   created() {
-    const userinfo = {
-      "id": 1,
-      "userName": "管理员",
-    }
-    localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    // const userinfo = {
+    //   "id": 1,
+    //   "userName": "管理员",
+    // }
+    // localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
   mounted: function () {
     // this.$toast.loading({

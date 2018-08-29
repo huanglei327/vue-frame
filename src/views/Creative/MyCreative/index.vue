@@ -42,7 +42,11 @@ export default {
                 that.list = res.data
             }
         }
-        getMyCreactive(that.$common.getUserInfo("userName")).then(callback)
+        const param = {
+            userName: that.$common.getUserInfo("userName"),
+            resolutionType: 0
+        }
+        getMyCreactive(param).then(callback)
     },
     methods: {
         caonima() {

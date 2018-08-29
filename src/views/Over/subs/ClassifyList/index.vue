@@ -1,17 +1,17 @@
 <template>
     <van-popup v-model="status.classifyPopup" position="right" style="width:100%;height:100%;">
-    <van-nav-bar :title="status.classifyTitle" @click-left="onClickLeft" left-text="返回" />
-    <div class="popupList">
- 
-      <van-checkbox-group v-model="list">
-        <van-cell-group>
-          <van-cell v-for="(item,index) in result" clickable :key="index" :title="item.resolutionName" @click="toggle(index)">
-            <van-checkbox :name="item" ref="checkboxes" />
-          </van-cell>
-        </van-cell-group>
-      </van-checkbox-group>
-    </div>
-  </van-popup>
+        <van-nav-bar :title="status.classifyTitle" @click-left="onClickLeft" left-text="返回" />
+        <div class="popupList">
+
+            <van-checkbox-group v-model="list">
+                <van-cell-group>
+                    <van-cell v-for="(item,index) in result" clickable :key="index" :title="item.resolutionName" @click="toggle(index)">
+                        <van-checkbox :name="item" ref="checkboxes" />
+                    </van-cell>
+                </van-cell-group>
+            </van-checkbox-group>
+        </div>
+    </van-popup>
 </template>
 <script>import { getTaInfo } from './api'
 export default {
@@ -29,12 +29,17 @@ export default {
         const callback = res => {
             if (res.errcode === 0) {
                 that.result = res.data
-                that.result.push({resolutionName:'无',resolutionId:0})
+                that.result.push({ resolutionName: '无', resolutionId: 0 })
             } else {
-               // alert(res.errmsg)
+                // alert(res.errmsg)
             }
         }
-        getTaInfo(that.status.decisionId,that.$common.getUserInfo("userName")).then(callback)
+        const param = {
+            decisionId: that.status.decisionId,
+            userName: that.$common.getUserInfo("userName"),
+            resolutionType: 0
+        }
+        getTaInfo(param).then(callback)
     },
     mounted() {
 
@@ -63,8 +68,8 @@ export default {
                 that.status.infoId += that.list[i].resolutionId + ','
                 that.status.infoName += that.list[i].resolutionName + ','
             }
-            that.status.infoId = that.status.infoId.substring(0,that.status.infoId.length-1)
-            that.status.infoName = that.status.infoName.substring(0,that.status.infoName.length-1)
+            that.status.infoId = that.status.infoId.substring(0, that.status.infoId.length - 1)
+            that.status.infoName = that.status.infoName.substring(0, that.status.infoName.length - 1)
             this.status.classifyPopup = false
         },
         toggle(index) {
@@ -75,24 +80,24 @@ export default {
 </script>
 <style lang="less" scoped>
 .mint-searchbar-cancel {
-  transition-duration: 0.3s;
+	transition-duration: 0.3s;
 }
 .mint-cell-wrapper {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .mint-popup-right {
-  left: 0;
+	left: 0;
 }
 
 .popup {
-  .mint-cell {
-    color: #333;
-    cursor: pointer;
-  }
+	.mint-cell {
+		color: #333;
+		cursor: pointer;
+	}
 }
 .icon {
-  width: 20px;
-  margin-right: 5px;
+	width: 20px;
+	margin-right: 5px;
 }
 </style>

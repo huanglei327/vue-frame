@@ -26,7 +26,6 @@
                         <van-col span="6"><img :src="page.imgn" /></van-col>
                         <van-col span="18" style="height:32px;line-height:32px;">{{page.tname}}</van-col>
                       </van-row>
-
                     </div>
                   </van-cell>
                 </router-link>
@@ -85,7 +84,7 @@ export default {
           status: true,
           src: view,
           pages: [
-            { tname: '查看提案', url: '/MyCreative', imgn: temp3 },
+            { tname: '我的提案', url: '/MyCreative', imgn: temp3 },
             { tname: '发起提案', url: '/CreativeList', imgn: temp4 }
           ]
         },
@@ -99,6 +98,16 @@ export default {
         //     { tname: '查看提案', url: '/Remind', imgn: temp5 },
         //   ]
         // },
+         {
+          id: '3',
+          name: '创意评审',
+          open: false,
+          status: true,
+          src: content,
+          pages: [
+            { tname: '我的评审', url: '/ReviewList', imgn: temp5 },
+          ]
+        },
         {
           id: '4',
           name: '结案管理',
@@ -106,7 +115,7 @@ export default {
           status: true,
           src: content,
           pages: [
-            { tname: '查看结案', url: '/QueryDecision?type=over', imgn: temp6 },
+            { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6 },
           ]
         }
         // , {
@@ -153,7 +162,7 @@ export default {
       ]
     }
   },
-  computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
+  //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this
     if (that.$route.query.status !== '1') {
@@ -174,7 +183,7 @@ export default {
     }
     // const userinfo = {
     //   "id": 1,
-    //   "userName": '溜溜',
+    //   "userName": '管理员',
     //   "token": '456',
     // }
     // localStorage.setItem("userInfo", JSON.stringify(userinfo))

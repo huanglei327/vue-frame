@@ -15,14 +15,6 @@
           <van-col span="8">决策人:{{item.createUser}}</van-col>
           <van-col span="16">申请时间:{{item.createTime}}</van-col>
         </van-row>
-        <!-- <van-row class="sizecor">
-          <van-col span="12">
-            <van-button size="small" @click="goDetails(item.decisionId)">查看决策</van-button>
-          </van-col>
-          <van-col span="12">
-            <van-button size="small"  @click="goRemind(item.decisionId)">查看提案</van-button>
-          </van-col>
-        </van-row> -->
       </van-cell>
 
       <div class="div-noshow" v-if="noDataShow">暂无数据</div>
@@ -69,7 +61,11 @@ export default {
             that.noDataShow = true
           }
         }
-        getDecisionMaking(that.$common.getUserInfo("userName")).then(callback)
+        const param = {
+          userName: that.$common.getUserInfo("userName"),
+          makType: 0
+        }
+        getDecisionMaking(param).then(callback)
         this.loading = false
         this.finished = true
       }, 500)
