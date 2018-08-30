@@ -165,28 +165,28 @@ export default {
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this
-    if (that.$route.query.status !== '1') {
-      that.$router.push({
-        path: '/BindUser',
-        query: {
-          token: that.$route.query.token
-        }
-      })
-    }
-    else {
-      const userinfo = {
-        "id": 1,
-        "userName": decodeURI(that.$route.query.userName),
-        "token": that.$route.query.token,
-      }
-      localStorage.setItem("userInfo", JSON.stringify(userinfo))
-    }
-    // const userinfo = {
-    //   "id": 1,
-    //   "userName": '管理员',
-    //   "token": '456',
+    // if (that.$route.query.status !== '1') {
+    //   that.$router.push({
+    //     path: '/BindUser',
+    //     query: {
+    //       token: that.$route.query.token
+    //     }
+    //   })
     // }
-    // localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    // else {
+    //   const userinfo = {
+    //     "id": 1,
+    //     "userName": decodeURI(that.$route.query.userName),
+    //     "token": that.$route.query.token,
+    //   }
+    //   localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    // }
+    const userinfo = {
+      "id": 1,
+      "userName": '管理员',
+      "token": '456',
+    }
+    localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
   methods: {
     kindToggle: function (id) {

@@ -2,12 +2,36 @@
     <div>
         <div class="detailsPanel">
             <van-cell-group class="details">
-                <van-cell>
-                    <div>决策名称:{{decisionList.decisionName}}</div>
-                    <div>提案名称:{{list.resolutionName}}</div>
-                    <div>提案内容:{{list.resolutionContent}}</div>
-                    <div>提案人:{{list.createUser}}</div>
-                    <div>提案时间:{{list.createTime}}</div>
+                <van-cell class="details">
+                    <div>
+                         <van-row>
+                                <van-col span="6">决策名称:</van-col>
+                                <van-col span="18">{{decisionList.decisionName}}分</van-col>
+                            </van-row>
+                      </div>
+                    <div>
+                         <van-row>
+                                <van-col span="6">提案名称:</van-col>
+                                <van-col span="18">{{list.resolutionName}}</van-col>
+                            </van-row>
+                    </div>
+                    <div>
+                         <van-row>
+                                <van-col span="6">提案内容:</van-col>
+                                <van-col span="18">{{list.resolutionContent}}</van-col>
+                            </van-row>
+                    </div>
+                    <div>
+                        <van-row>
+                                <van-col span="6">提案人:</van-col>
+                                <van-col span="18">{{list.createUser}}</van-col>
+                            </van-row>
+                    </div>
+                    <div> <van-row>
+                                <van-col span="6">提案时间:</van-col>
+                                <van-col span="18">{{list.createTime}}</van-col>
+                            </van-row>
+                    </div>
                     <ul class="up-img-ul">
                         <li v-for="(item,index) in imgList" :key="index">
                             <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
@@ -441,5 +465,8 @@ export default {
 .pingshen .van-col--18,
 .pingshen .van-col--12 {
 	padding-left: 10px;
+}
+.details .van-col-6{
+    color:#999;
 }
 </style>
