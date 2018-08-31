@@ -97,6 +97,7 @@ export default {
             const DecisionMaking = {
                 decisionId: that.$route.query.decisionId,
                 finalResolutionName: that.status.finalResolutionName,
+                optimalResolutionName: that.status.infoName,
                 updateUser: that.$common.getUserInfo("userName")
             }
             const callback = res => {

@@ -117,6 +117,16 @@ export default {
           pages: [
             { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6 },
           ]
+        },
+        {
+          id: '5',
+          name: '测试',
+          open: false,
+          status: true,
+          src: content,
+          pages: [
+            { tname: '我的结案', url: '/User', imgn: temp6 },
+          ]
         }
         // , {
         //   id: 'content',

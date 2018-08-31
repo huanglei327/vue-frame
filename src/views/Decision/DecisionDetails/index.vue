@@ -11,16 +11,35 @@
           <div class="d-p">创建决策人:{{list.createUser}}</div>
           <div class="d-p">创建时间:{{list.createTime}}</div>
           <div>
-            
             <ul class="up-img-ul">
               <li v-for="(item,index) in imgList" :key="index">
                 <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
               </li>
-
             </ul>
           </div>
         </van-cell>
       </van-cell-group>
+      <div v-if="list.statusStr === '结案'">
+        <div class="bg-white">
+          <div class="dd-wd">结案信息</div>
+        </div>
+        <van-cell-group>
+          <div class="div-jainfo">
+            <div>
+              <van-row>
+                <van-col span="8">最优创意提案:</van-col>
+                <van-col span="16">{{list.optimalResolutionName}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="8">最终结案:</van-col>
+                <van-col span="16">{{list.finalResolutionName}}</van-col>
+              </van-row>
+            </div>
+          </div>
+        </van-cell-group>
+      </div>
       <div class="bg-white">
         <div class="dd-wd">问答</div>
       </div>
@@ -49,11 +68,12 @@
           暂无提问
         </div>
       </van-cell-group>
+      <div style="width:100%;height:41px;background:white;"></div>
     </div>
     <div class="de-bo" v-if="tianshow">
       <div class="dflex">
-        <div class="b-red" @click="goNoPation()">不参与</div>
-        <div class="b-cheng" @click="goTiWen()">提问</div>
+        <div class="b-red" v-if="jcrShow" @click="goNoPation()">不参与</div>
+        <div class="b-cheng" v-if="jcrShow" @click="goTiWen()">提问</div>
         <div class="b-green" @click="goTiAn()">发起提案</div>
       </div>
     </div>
@@ -125,6 +145,7 @@ export default {
       isShowFF: false,
       tianshow: true,
       imgList: [],
+      jcrShow: false,
     };
   },
   mounted() {
@@ -151,11 +172,11 @@ export default {
     const param = {
       decisionId: that.$route.query.decisionId,
       userName: that.$common.getUserInfo("userName"),
-      makType:0
+      makType: 0
     }
     getDecisionMaking(param)
-    .then(callback)
-    .then(that.getTiwenList())
+      .then(callback)
+      .then(that.getTiwenList())
   },
   methods: {
     checkDiv() {
@@ -165,6 +186,10 @@ export default {
       }
       else {
         that.tianshow = true
+        that.jcrShow = true
+      }
+      if (that.list.statusStr === '结案') {
+        that.tianshow = false
       }
     },
     getTiwenList() {
@@ -281,7 +306,6 @@ export default {
 </script>
 <style lang="less">
 .detailsPanel {
-	height: calc(100vh - 90px);
 	overflow-x: auto;
 }
 .details {
@@ -307,7 +331,6 @@ export default {
 	position: fixed;
 	bottom: 0px;
 	margin-top: 10px;
-	height: calc(100vh-100px);
 	width: 100%;
 	.van-button--small {
 		height: 40px;
@@ -318,7 +341,7 @@ export default {
 		display: flex;
 		height: 40px;
 		div {
-			width: 33.3%;
+			width: 100%;
 			height: 40px;
 			line-height: 38px;
 			text-align: center;
@@ -326,13 +349,13 @@ export default {
 		}
 		.b-red {
 			background: #f44;
-			border-radius: 5px 0 0 0;
+			//	border-radius: 5px 0 0 0;
 		}
 		.b-cheng {
 			background: #ff7f00;
 		}
 		.b-green {
-			border-radius: 0 5px 0 0;
+			//	border-radius: 0 5px 0 0;
 			background: rgb(77, 201, 46);
 		}
 	}
@@ -371,6 +394,16 @@ export default {
 	.ff {
 		text-align: center;
 		color: blue;
+	}
+}
+.div-jainfo {
+	.van-col--8 {
+		text-align: right;
+		color: #666;
+		padding: 5px 10px 5px 0;
+	}
+	.van-col--16 {
+		padding: 5px 0;
 	}
 }
 </style>

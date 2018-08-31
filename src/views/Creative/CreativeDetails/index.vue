@@ -4,33 +4,34 @@
             <van-cell-group class="details">
                 <van-cell class="details">
                     <div>
-                         <van-row>
-                                <van-col span="6">决策名称:</van-col>
-                                <van-col span="18">{{decisionList.decisionName}}分</van-col>
-                            </van-row>
-                      </div>
-                    <div>
-                         <van-row>
-                                <van-col span="6">提案名称:</van-col>
-                                <van-col span="18">{{list.resolutionName}}</van-col>
-                            </van-row>
-                    </div>
-                    <div>
-                         <van-row>
-                                <van-col span="6">提案内容:</van-col>
-                                <van-col span="18">{{list.resolutionContent}}</van-col>
-                            </van-row>
+                        <van-row>
+                            <van-col span="6">决策名称:</van-col>
+                            <van-col span="18">{{decisionList.decisionName}}</van-col>
+                        </van-row>
                     </div>
                     <div>
                         <van-row>
-                                <van-col span="6">提案人:</van-col>
-                                <van-col span="18">{{list.createUser}}</van-col>
-                            </van-row>
+                            <van-col span="6">提案名称:</van-col>
+                            <van-col span="18">{{list.resolutionName}}</van-col>
+                        </van-row>
                     </div>
-                    <div> <van-row>
-                                <van-col span="6">提案时间:</van-col>
-                                <van-col span="18">{{list.createTime}}</van-col>
-                            </van-row>
+                    <div>
+                        <van-row>
+                            <van-col span="6">提案内容:</van-col>
+                            <van-col span="18">{{list.resolutionContent}}</van-col>
+                        </van-row>
+                    </div>
+                    <div>
+                        <van-row>
+                            <van-col span="6">提案人:</van-col>
+                            <van-col span="18">{{list.createUser}}</van-col>
+                        </van-row>
+                    </div>
+                    <div>
+                        <van-row>
+                            <van-col span="6">提案时间:</van-col>
+                            <van-col span="18">{{list.createTime}}</van-col>
+                        </van-row>
                     </div>
                     <ul class="up-img-ul">
                         <li v-for="(item,index) in imgList" :key="index">
@@ -46,7 +47,7 @@
             <van-cell-group>
                 <div v-if="listDtl.length>0">
                     <van-cell class="pingshen" v-for="(item,index) in listDtl" :key="index">
-                        <div>
+                        <div v-if="scoreShow">
                             <van-row>
                                 <van-col span="4">分数:</van-col>
                                 <van-col span="12">
@@ -139,10 +140,17 @@
                     <h3>{{popupTitle}}</h3>
                 </div>
                 <van-cell-group>
-                    <van-field type="number" min="10" max="100" required clearable label="分数" placeholder="请输入分数1-10" v-model="resolutionScore" />
-                    <van-field type="textarea" maxlength="50" required clearable label="结论" placeholder="请输入结论，不超过50字" rows="1" autosize v-model="resolutionConclusion" />
-                    <van-field type="textarea" maxlength="200" required clearable label="优点" placeholder="请在这里录入优点，提案名称不超过200个字" v-model="resolutionMerit" rows="2" autosize />
-                    <van-field type="textarea" maxlength="200" required clearable label="缺点" placeholder="请在这里录入优点，提案名称不超过200个字" rows="2" autosize v-model="resolutionDefect" />
+                    <van-field type="number" min="1" max="99" required clearable label="分数" 
+                    placeholder="请输入分数1-10" v-model="psObj.resolutionScore" :error-message="psObj.resolutionScore_err" />
+                    <van-field type="textarea" maxlength="50" required clearable 
+                    label="结论" placeholder="请输入结论，不超过50字" rows="1" autosize :error-message="psObj.resolutionConclusion_err"
+                     v-model="psObj.resolutionConclusion" />
+                    <van-field type="textarea" maxlength="200" required clearable label="优点" 
+                    placeholder="请在这里录入优点，提案名称不超过200个字" :error-message="psObj.resolutionMerit_err" 
+                    v-model="psObj.resolutionMerit" rows="2" autosize />
+                    <van-field type="textarea" maxlength="200" required clearable label="缺点" 
+                    placeholder="请在这里录入优点，提案名称不超过200个字" rows="2" autosize 
+                    :error-message="psObj.resolutionDefect_err" v-model="psObj.resolutionDefect" />
                 </van-cell-group>
                 <div class="div-btn">
                     <van-button type="primary" size="newlarge" @click="btnSavePs">发起评审
@@ -186,10 +194,16 @@ export default {
             list: {},
             listDtl: [],
             decisionList: {},
-            resolutionMerit: '',
-            resolutionDefect: '',
-            resolutionScore: '',
-            resolutionConclusion: '',
+            psObj: {
+                resolutionMerit: '',
+                resolutionDefect: '',
+                resolutionScore: '',
+                resolutionConclusion: '',
+                resolutionMerit_err: '',
+                resolutionDefect_err: '',
+                resolutionScore_err: '',
+                resolutionConclusion_err: '',
+            },
             quizCentent: '',
             userName: '',
             decisionId: 0,
@@ -199,34 +213,22 @@ export default {
             isShowFF: true,
             ffshow: false,
             answerCentent: '',
-            imgList: []
+            imgList: [],
+            scoreShow: false
         }
     },
     mounted() {
         const that = this
         that.resolutionId = that.$route.query.resolutionId
         that.decisionId = that.$route.query.decisionId
-        const callback = res => {
-            if (res.errcode === 0) {
-                that.list = res.data[0]
-                for (var i = 0; i < res.data[0].pictureList.length; i++) {
-                    const a = res.data[0].pictureList[i]
-                    that.imgList.push('http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=' + a.pictureName)
 
-                }
-            }
-        }
-        const param = {
-            resolutionId: that.resolutionId,
-            resolutionType: 0,
-            userName: that.$common.getUserInfo("userName")
-        }
-        getCreativeDetails(param)
-            .then(callback)
-            .then(that.getJcInfo())
-            .then(that.getQui())
-            .then(that.getResoluInfo())
-
+        that.getInit().then(() => {
+            return that.getJcInfo()
+        }).then(() => {
+            return that.getQui()
+        }).then(() => {
+            return that.getResoluInfo()
+        })
     },
     filters: {
         filterFun(value) {
@@ -239,29 +241,62 @@ export default {
         }
     },
     methods: {
-        getResoluInfo() {
-            const that = this
-            const c = res => {
-                if (res.errcode === 0) {
-                    that.listDtl = res.data
-                } else {
+        getInit() {
+            return new Promise((resolve, reject) => {
+                const that = this
+                const callback = res => {
+                    if (res.errcode === 0) {
+                        that.list = res.data[0]
+                        that.decisionId = res.data[0].decisionId
+                        console.log('1')
+                        for (var i = 0; i < res.data[0].pictureList.length; i++) {
+                            const a = res.data[0].pictureList[i]
+                            that.imgList.push('http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=' + a.pictureName)
+
+                        }
+                        resolve()
+                    }
                 }
-            }
-            const param = {
-                resolutionId: that.resolutionId
-            }
-            getResolutionInfo(param).then(c)
+                const param = {
+                    resolutionId: that.resolutionId,
+                    resolutionType: 0,
+                    userName: that.$common.getUserInfo("userName")
+                }
+                getCreativeDetails(param).then(callback)
+            })
+        },
+        getResoluInfo() {
+            return new Promise((resolve, reject) => {
+                const that = this
+                const c = res => {
+                    if (res.errcode === 0) {
+                        that.listDtl = res.data
+                        that.decisionId = res.data[0].decisionId
+                        resolve('something')
+                    } else {
+                    }
+                }
+                const param = {
+                    resolutionId: that.resolutionId
+                }
+                getResolutionInfo(param).then(c)
+            })
         },
         getJcInfo() {
             const that = this
+            console.log('2')
+            console.log(that.list.decisionId)
             const c = res => {
                 if (res.errcode === 0) {
                     that.decisionList = res.data[0]
+                    if (that.decisionList.statusStr === "结案") {
+                        that.scoreShow = true
+                    }
                 } else {
                 }
             }
             const param = {
-                decisionId: that.decisionId,
+                decisionId: that.list.decisionId,
                 userName: that.$common.getUserInfo("userName"),
                 makType: 0
             }
@@ -317,11 +352,25 @@ export default {
         },
         btnSavePs() {
             const that = this
+            let checklist = [
+                { domId: "resolutionMerit", msg: "请输入优点", valiType: "" },
+                { domId: "resolutionDefect", msg: "请输入缺点", valiType: "" },
+                { domId: "resolutionScore", msg: "请输入分数1-10", valiType: "" },
+                { domId: "resolutionConclusion", msg: "请输入结论", valiType: "" },
+            ]
+            if (!that.$checkVal.validateNull(that.psObj, checklist)) {
+                return;
+            }
+            if(that.psObj.resolutionScore >10 || that.psObj.resolutionScore <0){
+                that.psObj.resolutionScore_err="请输入分数1-10"
+                return;
+            }
             const callback = res => {
                 if (res.errcode === 0) {
                     that.$toast.success(res.errmsg)
                     that.pingshenShow = !that.pingshenShow
                     that.show = false
+                    window.reload()
                 }
                 else {
                     that.$toast.fail(res.errmsg);
@@ -331,10 +380,10 @@ export default {
             const param = {
                 decisionId: that.list.decisionId,
                 resolutionId: that.resolutionId,
-                resolutionConclusion: that.resolutionConclusion,
-                resolutionMerit: that.resolutionMerit,
-                resolutionDefect: that.resolutionDefect,
-                resolutionScore: that.resolutionScore,
+                resolutionConclusion: that.psObj.resolutionConclusion,
+                resolutionMerit: that.psObj.resolutionMerit,
+                resolutionDefect: that.psObj.resolutionDefect,
+                resolutionScore: that.psObj.resolutionScore,
                 createUser: that.$common.getUserInfo("userName")
             }
             addResolutionDtlInfo(param).then(callback)
@@ -466,7 +515,7 @@ export default {
 .pingshen .van-col--12 {
 	padding-left: 10px;
 }
-.details .van-col-6{
-    color:#999;
+.details .van-col-6 {
+	color: #999;
 }
 </style>

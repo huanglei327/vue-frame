@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { getDecisionMaking,getMyCreactive } from './api'
+import { getDecisionMaking,getMyCreactive,GetDecisionList } from './api'
 export default {
     data() {
         return {
@@ -79,9 +79,9 @@ export default {
                 }
                 const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    resolutionType:0
+                    assessorType:1
                 }
-                getMyCreactive(param).then(callback)
+                GetDecisionList(param).then(callback)
                 this.loading = false
                 this.finished = true
             }, 500)
@@ -98,9 +98,9 @@ export default {
                 }
                  const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    resolutionType:0
+                    assessorType:2
                 }
-                getMyCreactive(param).then(callback)
+                GetDecisionList(param).then(callback)
                 this.loading1 = false
                 this.finished1 = true
             }, 500)

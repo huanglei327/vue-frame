@@ -103,7 +103,6 @@ export default {
   mounted() { },
   methods: {
     btnGoJC() {
-      console.log(this.$common.MathRand(5));
       const that = this;
       let checklist = [
         { domId: "jcName", msg: "请输入决策名称", valiType: "" },
