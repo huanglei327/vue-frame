@@ -66,9 +66,11 @@
         </div>
         <div v-else class="no-data">
           暂无提问
+          
         </div>
+         <div style="width:100%;height:48px;"></div>
       </van-cell-group>
-      <div style="width:100%;height:41px;background:white;"></div>
+     
     </div>
     <div class="de-bo" v-if="tianshow">
       <div class="dflex">
@@ -333,17 +335,17 @@ export default {
 	margin-top: 10px;
 	width: 100%;
 	.van-button--small {
-		height: 40px;
+		height: 45px;
 		line-height: 38px;
 		width: 33.3%;
 	}
 	.dflex {
 		display: flex;
-		height: 40px;
+		height: 45px;
 		div {
 			width: 100%;
-			height: 40px;
-			line-height: 38px;
+			height: 45px;
+			line-height: 43px;
 			text-align: center;
 			color: white;
 		}

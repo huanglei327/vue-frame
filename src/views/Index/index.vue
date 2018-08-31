@@ -88,16 +88,6 @@ export default {
             { tname: '发起提案', url: '/CreativeList', imgn: temp4 }
           ]
         },
-        // {
-        //   id: '3',
-        //   name: '提案提醒',
-        //   open: false,
-        //   status: true,
-        //   src: content,
-        //   pages: [
-        //     { tname: '查看提案', url: '/Remind', imgn: temp5 },
-        //   ]
-        // },
          {
           id: '3',
           name: '创意评审',
@@ -116,16 +106,6 @@ export default {
           src: content,
           pages: [
             { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6 },
-          ]
-        },
-        {
-          id: '5',
-          name: '测试',
-          open: false,
-          status: true,
-          src: content,
-          pages: [
-            { tname: '我的结案', url: '/User', imgn: temp6 },
           ]
         }
         // , {
@@ -175,28 +155,28 @@ export default {
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this
-    // if (that.$route.query.status !== '1') {
-    //   that.$router.push({
-    //     path: '/BindUser',
-    //     query: {
-    //       token: that.$route.query.token
-    //     }
-    //   })
-    // }
-    // else {
-    //   const userinfo = {
-    //     "id": 1,
-    //     "userName": decodeURI(that.$route.query.userName),
-    //     "token": that.$route.query.token,
-    //   }
-    //   localStorage.setItem("userInfo", JSON.stringify(userinfo))
-    // }
-    const userinfo = {
-      "id": 1,
-      "userName": '管理员',
-      "token": '456',
+    if (that.$route.query.status !== '1') {
+      that.$router.push({
+        path: '/BindUser',
+        query: {
+          token: that.$route.query.token
+        }
+      })
     }
-    localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    else {
+      const userinfo = {
+        "id": 1,
+        "userName": decodeURI(that.$route.query.userName),
+        "token": that.$route.query.token,
+      }
+      localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    }
+    // const userinfo = {
+    //   "id": 1,
+    //   "userName": '管理员',
+    //   "token": '456',
+    // }
+    // localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
   methods: {
     kindToggle: function (id) {
