@@ -19,78 +19,75 @@
                 </van-cell>
             </van-cell-group>
         </van-list>
+        <div class="div-noshow" v-if="noDataShow">暂无数据</div>
     </div>
 </template>
 
 <script>
-import { getMyCreactive } from './api'
+import { getMyCreactive } from "./api";
 export default {
-    data() {
-        return {
-            msg: '----',
-            list: [],
-            loading: false,
-            finished: false,
-        }
+  data() {
+    return {
+      msg: "----",
+      list: [],
+      loading: false,
+      finished: false,
+      noDataShow: false
+    };
+  },
+  mounted() {
+    const that = this;
+    const callback = res => {
+      if (res.errcode === 0 && res.data.length > 0) {
+        that.list = res.data;
+      } else {
+        that.noDataShow = true;
+      }
+    };
+    const param = {
+      userName: that.$common.getUserInfo("userName"),
+      resolutionType: 0
+    };
+    getMyCreactive(param).then(callback);
+  },
+  methods: {
+    caonima() {
+      let that = this;
+      that.loading = false;
+      that.finished = true;
     },
-    mounted() {
-
-        const that = this
-        const callback = res => {
-            console.log(res)
-            if (res.errcode === 0) {
-                that.list = res.data
-            }
+    skipCreative(resolutionId, decisionId) {
+      this.$router.push({
+        path: "/CreativeDetails",
+        query: {
+          resolutionId: resolutionId,
+          decisionId: decisionId,
+          pageType:'No'
         }
-        const param = {
-            userName: that.$common.getUserInfo("userName"),
-            resolutionType: 0
-        }
-        getMyCreactive(param).then(callback)
-    },
-    methods: {
-        caonima() {
-            let that = this
-
-            // getMyCreactive().then(response => {
-            //     that.list = response.data
-            //     console.log(response)
-            // })
-            that.loading = false
-            that.finished = true
-        },
-        skipCreative(resolutionId, decisionId) {
-            this.$router.push({
-                path: '/CreativeDetails',
-                query: {
-                    resolutionId: resolutionId,
-                    decisionId: decisionId
-                }
-            })
-        }
+      });
     }
-
-}
+  }
+};
 </script>
 
 <style>
 .van-search--show-action {
-	padding-right: 15px;
+  padding-right: 15px;
 }
 .w_l_m {
-	font-size: 12px;
-	color: #666;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  font-size: 12px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .w_l_t {
-	font-size: 12px;
-	color: #999;
+  font-size: 12px;
+  color: #999;
 }
 .wl_c {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -89,7 +89,7 @@ export default new Router({
       name: 'MyCreative',
       component: MyCreative,
       meta:{
-        title:'我的提案'
+        title:'查看提案'
       }
     },
     {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <van-tabs v-model="active" sticky @click="tabsClick">
-            <van-tab title="未发起">
+            <van-tab title="未完成">
                 <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="300">
                     <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId)">
                         <div class="d-c-title">
@@ -20,9 +20,9 @@
                     <div class="div-noshow" v-if="noDataShow">暂无数据</div>
                 </van-list>
             </van-tab>
-            <van-tab title="已发起">
+            <van-tab title="已完成">
                 <van-list v-model="loading1" :finished="finished1" @load="onLoad1" :offset="300">
-                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId)">
+                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId,'No')">
                         <div class="d-c-title">
                             <van-row>
                                 <van-col span="20" class="title"> {{item.resolutionName}}</van-col>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { getDecisionMaking,getMyCreactive,GetDecisionList } from './api'
+import { getDecisionMaking, getMyCreactive, GetDecisionList } from './api'
 export default {
     data() {
         return {
@@ -77,9 +77,9 @@ export default {
                         that.noDataShow = true
                     }
                 }
-                const param ={
-                    userName:that.$common.getUserInfo("userName"),
-                    assessorType:1
+                const param = {
+                    userName: that.$common.getUserInfo("userName"),
+                    assessorType: 1
                 }
                 GetDecisionList(param).then(callback)
                 this.loading = false
@@ -96,9 +96,9 @@ export default {
                         that.noDataShow1 = true
                     }
                 }
-                 const param ={
-                    userName:that.$common.getUserInfo("userName"),
-                    assessorType:2
+                const param = {
+                    userName: that.$common.getUserInfo("userName"),
+                    assessorType: 2
                 }
                 GetDecisionList(param).then(callback)
                 this.loading1 = false
@@ -120,19 +120,20 @@ export default {
                 this.list1 = []
             }
         },
-        goDetails(decisionId){
-             this.$router.push({
+        goDetails(decisionId) {
+            this.$router.push({
                 path: "/DecisionDetails",
                 query: {
                     decisionId: decisionId
                 }
             })
         },
-        goJCDetails(resolutionId){
-              this.$router.push({
+        goJCDetails(resolutionId, pageType) {
+            this.$router.push({
                 path: "/CreativeDetails",
                 query: {
-                    resolutionId:resolutionId
+                    resolutionId: resolutionId,
+                    pageType: pageType
                 }
             })
         }

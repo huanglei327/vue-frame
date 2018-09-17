@@ -5,7 +5,8 @@
         <van-cell>
           <div class="d-t">{{list.decisionName}}</div>
           <div class="d-p">类型:{{list.decisionTypeStr}}</div>
-          <div class="d-c">{{list.decisionContent}}</div>
+          <div class="d-c">
+            {{list.decisionContent}}</div>
           <div class="d-p">提案人:{{list.decisionProposer}}</div>
           <div class="d-p">评审人:{{list.decisionAssessor}}</div>
           <div class="d-p">创建决策人:{{list.createUser}}</div>
@@ -19,6 +20,27 @@
           </div>
         </van-cell>
       </van-cell-group>
+      <div v-if="noJCList.length>0">
+        <div class="bg-white">
+          <div class="dd-wd">未参与提案</div>
+        </div>
+        <van-cell-group v-for="(item,index) in noJCList" :key="index">
+          <div class="div-jainfo">
+            <div>
+              <van-row>
+                <van-col span="6">提案人:</van-col>
+                <van-col span="16">{{item.decisionProposer}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="6">原因:</van-col>
+                <van-col span="16">{{item.remarks}}</van-col>
+              </van-row>
+            </div>
+          </div>
+        </van-cell-group>
+      </div>
       <div v-if="list.statusStr === '结案'">
         <div class="bg-white">
           <div class="dd-wd">结案信息</div>
@@ -58,24 +80,29 @@
                   <div @click="showAnswer(item.quizId)">回复</div>
                 </van-col>
               </van-row>
-              <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
+              <!-- <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
                 {{ff.createUser}}回复:{{ff.answerCentent}}
+              </div> -->
+              <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
+                <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
+                  <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
+                </van-col>
               </div>
             </div>
           </van-cell>
         </div>
         <div v-else class="no-data">
           暂无提问
-          
         </div>
-         <div style="width:100%;height:48px;"></div>
+        <div style="width:100%;height:48px;"></div>
       </van-cell-group>
-     
+
     </div>
     <div class="de-bo" v-if="tianshow">
       <div class="dflex">
         <div class="b-red" v-if="jcrShow" @click="goNoPation()">不参与</div>
-        <div class="b-cheng" v-if="jcrShow" @click="goTiWen()">提问</div>
+        <div class="b-cheng" v-if="btntiwenShow" @click="goTiWen()">提问</div>
         <div class="b-green" @click="goTiAn()">发起提案</div>
       </div>
     </div>
@@ -97,7 +124,13 @@
           <h3>不参与原因</h3>
         </div>
         <van-cell-group>
-          <van-field :value="list.decisionName" required clearable label="创意提案名称" disabled />
+          <!-- <van-field :value="list.decisionName" required clearable label="创意提案名称" disabled /> -->
+          <div>
+            <van-row>
+              <van-col span="6" class="wdt-toux">创意提案名称 </van-col>
+              <van-col span="18">{{list.decisionName}}</van-col>
+            </van-row>
+          </div>
           <van-field v-model="remarks" required label="原因" type="textarea" placeholder="请在这里录入不参与提案评审的原因不超过200个字。" rows="6" autosize />
         </van-cell-group>
         <div class="div-btn">
@@ -127,7 +160,8 @@ import {
   notDecisionMaking,
   addQuizInfo,
   addAnswerInfo,
-  getQuizInfoA
+  getQuizInfoA,
+  queryNoJC
 } from "./api";
 export default {
   data() {
@@ -148,6 +182,9 @@ export default {
       tianshow: true,
       imgList: [],
       jcrShow: false,
+      btntiwenShow: true,
+      noJCList: [],
+      isAshowFF: false,
     };
   },
   mounted() {
@@ -185,10 +222,28 @@ export default {
       const that = this
       if (that.list.createUser === that.$common.getUserInfo("userName")) {
         that.isShowFF = true
+        that.btntiwenShow = false
+        that.getNoJcInfo()
       }
       else {
         that.tianshow = true
         that.jcrShow = true
+        that.isAshowFF = true
+
+      }
+      if (that.list.isExistsResolution === "存在") {
+        that.tianshow = false
+      }
+      var assessorA = that.list.decisionProposer
+      var temp = assessorA.split(',')
+      var num = 0
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i] === that.$common.getUserInfo("userName")) {
+          num = 1
+        }
+      }
+      if (num !== 1) {
+        that.tianshow = false
       }
       if (that.list.statusStr === '结案') {
         that.tianshow = false
@@ -198,8 +253,12 @@ export default {
       const that = this;
       const callbackA = res => {
         if (res.errcode === 0) {
-          console.log(res);
           that.tiwenlist = res.data;
+          that.tiwenlist.forEach(item => {
+            if (item.createUser === that.$common.getUserInfo("userName")) {
+              that.btntiwenShow = false
+            }
+          });
           that.$toast.clear();
         } else {
           that.$toast.clear();
@@ -207,9 +266,23 @@ export default {
       };
       const param = {
         decisionId: that.$route.query.decisionId,
-        userName: that.$common.getUserInfo("userName")
+        userName: that.$common.getUserInfo("userName"),
+        makQuizType: 1
       }
       getQuizInfoA(param).then(callbackA)
+    },
+    getNoJcInfo() {
+      const that = this
+      const c = res => {
+        if (res.errcode === 0) {
+          that.noJCList = res.data
+        }
+      }
+      const param = {
+        decisionId: that.$route.query.decisionId,
+        isParticipationResolution: 1
+      }
+      queryNoJC(param).then(c)
     },
     goTiWen() {
       this.show = true;
@@ -316,7 +389,7 @@ export default {
 		line-height: 30px;
 	}
 	.d-t {
-		text-align: center;
+		text-indent: 20px;
 	}
 	.d-c {
 		padding: 10px 0;
@@ -399,6 +472,14 @@ export default {
 	}
 }
 .div-jainfo {
+	.van-col--6 {
+		text-align: right;
+		color: #666;
+		padding: 5px 10px 5px 0;
+	}
+	.van-col--18 {
+		padding: 5px 0;
+	}
 	.van-col--8 {
 		text-align: right;
 		color: #666;

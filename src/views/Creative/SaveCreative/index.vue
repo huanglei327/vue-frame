@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { SaveTA,UpImg } from './api'
+import { SaveTA, UpImg } from './api'
 import speopleList from './subs/SpeopleList/index.vue'
 export default {
     data() {
@@ -130,12 +130,25 @@ export default {
             //数组
             if (Array.isArray(file)) {
             } else {
+                const toast1 = that.$toast.loading({
+                    mask: false,
+                    message: '上传中...',
+                    duration: 5000
+                });
+                if (file.file.size > 1024 * 100 * 5) {
+                    toast1.clear();
+                    that.$dialog.alert({
+                        message: '请上传小于5MB的图片'
+                    });
+                    return
+                }
                 //对象
                 const callback = res => {
                     if (res.errcode === 0) {
+                        that.$toast.clear()
                         that.$toast.success({
                             message: "上传成功",
-                            duration: 2000
+                            duration: 1500
                         });
                         that.imglist.push(file.content);
                         that.status.pictureNames += res.pictureUrl + ',';

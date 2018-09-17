@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { getDecisionMaking } from './api'
+import { getDecisionMaking,getMakByResolution } from './api'
 export default {
     data() {
         return {
@@ -69,19 +69,6 @@ export default {
         onLoad() {
             const that = this
             setTimeout(() => {
-                // var num = 1
-                // const objlist = JSON.parse(localStorage.getItem("jclocal"))
-                // for (let i = 0; i < objlist.length; i++) {
-                //   if ((that.page * that.pagesize) > i || i < (that.page + 1) * that.pagesize) {
-                //     that.list.push(objlist[i])
-                //     num = num +1
-                //   }
-                // }
-                // this.loading = false;
-                // console.log(num)
-                // if (num < that.pagesize) {
-                //   this.finished = true;
-                // }
                 const callback = res => {
                     console.log(res)
                     if (res.errcode === 0) {
@@ -92,9 +79,10 @@ export default {
                 }
                 const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    makType:1
+                    makType:1,
+                    isExistResolution:2
                 }
-                getDecisionMaking(param).then(callback)
+                getMakByResolution(param).then(callback)
                 this.loading = false
                 this.finished = true
             }, 500)
@@ -103,7 +91,7 @@ export default {
             const that = this
             setTimeout(() => {
                 const callback = res => {
-                    if (res.errcode === 0) {
+                    if (res.errcode === 0 && res.data.length>0) {
                         that.list1 = res.data
                     } else {
                         that.noDataShow1 = true
@@ -111,9 +99,10 @@ export default {
                 }
                  const param ={
                     userName:that.$common.getUserInfo("userName"),
-                    makType:2
+                    makType:1,
+                    isExistResolution:1
                 }
-                getDecisionMaking(param).then(callback)
+                getMakByResolution(param).then(callback)
                 this.loading1 = false
                 this.finished1 = true
             }, 500)

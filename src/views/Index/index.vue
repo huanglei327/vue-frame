@@ -1,14 +1,8 @@
 <template>
   <div class="index">
     <div class="portrait-list">
-      <div class="p-photo">
-      </div>
-      <div class="p-p-title"></div>
+      <div class="portrait-img"></div>
     </div>
-    <!-- <div class="index-hd">
-      <img class="kind-list-img-title" src="../../assets/logo.jpg" />
-      <div class="index-desc">欢迎光临</div>
-    </div> -->
     <div class="index-bd">
       <div class="kind-list">
         <div class="kind-list-item" v-for="item in list" :key="item.id">
@@ -53,26 +47,32 @@ import temp3 from '../../assets/images/3.png'
 import temp4 from '../../assets/images/4.png'
 import temp5 from '../../assets/images/5.png'
 import temp6 from '../../assets/images/6.png'
+import temp7 from '../../assets/images/7.png'
+import temp8 from '../../assets/images/8.png'
+import temp9 from '../../assets/images/9.png'
 import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'HelloWorld',
   data() {
     return {
       photo: '../../assets/logo.jpg',
-      msg: 'asd',
+      msg: 'test',
+      userName: '',
       list: [
         {
           id: 'view',
           name: '决策管理',
           open: false,
           status: true,
-          src: view,
+          src: temp7,
           pages: [
-            {              tname: '查看决策',
+            {              
+              tname: '我的决策',
               url: '/QueryDecision',
               imgn: temp1
             },
-            {              tname: '发起决策',
+            {              
+              tname: '发起决策',
               url: '/SaveDecision',
               imgn: temp2            }
           ]
@@ -82,18 +82,18 @@ export default {
           name: '创意提案管理',
           open: false,
           status: true,
-          src: view,
+          src: temp8,
           pages: [
-            { tname: '我的提案', url: '/MyCreative', imgn: temp3 },
+            { tname: '查看提案', url: '/MyCreative', imgn: temp3 },
             { tname: '发起提案', url: '/CreativeList', imgn: temp4 }
           ]
         },
-         {
+        {
           id: '3',
           name: '创意评审',
           open: false,
           status: true,
-          src: content,
+          src: temp9,
           pages: [
             { tname: '我的评审', url: '/ReviewList', imgn: temp5 },
           ]
@@ -103,52 +103,11 @@ export default {
           name: '结案管理',
           open: false,
           status: true,
-          src: content,
+          src: temp7,
           pages: [
             { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6 },
           ]
         }
-        // , {
-        //   id: 'content',
-        //   name: '基础内容',
-        //   open: false,
-        //   status: true,
-        //   src: content,
-        //   pages: ['text', 'icon', 'progress']
-        // }, {
-        //   id: 'form',
-        //   name: '表单组件',
-        //   open: false,
-        //   status: true,
-        //   src: form,
-        //   pages: ['button', 'checkbox', 'form', 'input', 'label', 'picker', 'radio', 'slider', 'switch', 'textarea']
-        // }, {
-        //   id: 'nav',
-        //   name: '导航',
-        //   open: false,
-        //   status: true,
-        //   src: nav,
-        //   pages: ['navigator']
-        // }, {
-        //   id: 'media',
-        //   name: '媒体组件',
-        //   open: false,
-        //   status: true,
-        //   src: media,
-        //   pages: ['image', 'audio', 'video']
-        // }, {
-        //   id: 'map',
-        //   name: '地图',
-        //   status: true,
-        //   src: map,
-        //   pages: ['map']
-        // }, {
-        //   id: 'canvas',
-        //   name: '画布',
-        //   status: true,
-        //   src: canvas,
-        //   pages: ['canvas']
-        // }
       ]
     }
   },
@@ -171,9 +130,11 @@ export default {
       }
       localStorage.setItem("userInfo", JSON.stringify(userinfo))
     }
+    that.msg = JSON.stringify(that.$route.query)
+    that.userName = decodeURI(that.$route.query.userName)
     // const userinfo = {
     //   "id": 1,
-    //   "userName": '管理员',
+    //   "userName": '张晓露',
     //   "token": '456',
     // }
     // localStorage.setItem("userInfo", JSON.stringify(userinfo))
@@ -197,15 +158,20 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less" >
 .index {
-	background: white;
+	//background: white;
 }
 .portrait-list {
-	height: 200px;
 	background: white;
-	background: url(/static/img/logo.c3b7e7d.jpg) no-repeat;
-	background-size: 100% 100%;
-	margin: 0 auto;
-	width: 90%;
+	// background: url(/static/img/logo.c3b7e7d.jpg) no-repeat;
+	// background-size: 100% 100%;
+	// margin: 0 auto;
+	width: 100%;
+	.portrait-img {
+		background: url(/static/img/logo.c3b7e7d.jpg) no-repeat;
+		background-size: 100% 100%;
+		margin: 0 10px 0 15px;
+		height: 200px;
+	}
 	.p-photo {
 		margin: 0 auto;
 		width: 100px;

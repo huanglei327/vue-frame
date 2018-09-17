@@ -1,427 +1,450 @@
 <template>
-    <div>
-        <div class="detailsPanel">
-            <van-cell-group class="details">
-                <van-cell class="details">
-                    <div>
-                        <van-row>
-                            <van-col span="6">决策名称:</van-col>
-                            <van-col span="18">{{decisionList.decisionName}}</van-col>
-                        </van-row>
-                    </div>
-                    <div>
-                        <van-row>
-                            <van-col span="6">提案名称:</van-col>
-                            <van-col span="18">{{list.resolutionName}}</van-col>
-                        </van-row>
-                    </div>
-                    <div>
-                        <van-row>
-                            <van-col span="6">提案内容:</van-col>
-                            <van-col span="18">{{list.resolutionContent}}</van-col>
-                        </van-row>
-                    </div>
-                    <div>
-                        <van-row>
-                            <van-col span="6">提案人:</van-col>
-                            <van-col span="18">{{list.createUser}}</van-col>
-                        </van-row>
-                    </div>
-                    <div>
-                        <van-row>
-                            <van-col span="6">提案时间:</van-col>
-                            <van-col span="18">{{list.createTime}}</van-col>
-                        </van-row>
-                    </div>
-                    <ul class="up-img-ul">
-                        <li v-for="(item,index) in imgList" :key="index">
-                            <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
-                        </li>
+  <div>
+    <div class="detailsPanel">
+      <van-cell-group class="details">
+        <van-cell class="details">
+          <div>
+            <van-row>
+              <van-col span="6">决策名称:</van-col>
+              <van-col span="18">{{decisionList.decisionName}}</van-col>
+            </van-row>
+          </div>
+          <div>
+            <van-row>
+              <van-col span="6">提案名称:</van-col>
+              <van-col span="18">{{list.resolutionName}}</van-col>
+            </van-row>
+          </div>
+          <div>
+            <van-row>
+              <van-col span="6">提案内容:</van-col>
+              <van-col span="18">{{list.resolutionContent}}</van-col>
+            </van-row>
+          </div>
+          <div>
+            <van-row>
+              <van-col span="6">提案人:</van-col>
+              <van-col span="18">{{list.createUser}}</van-col>
+            </van-row>
+          </div>
+          <div>
+            <van-row>
+              <van-col span="6">提案时间:</van-col>
+              <van-col span="18">{{list.createTime}}</van-col>
+            </van-row>
+          </div>
+          <ul class="up-img-ul">
+            <li v-for="(item,index) in imgList" :key="index">
+              <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
+            </li>
 
-                    </ul>
-                </van-cell>
-            </van-cell-group>
-            <div class="bg-white">
-                <div class="dd-wd">评审</div>
+          </ul>
+        </van-cell>
+      </van-cell-group>
+      <div class="bg-white">
+        <div class="dd-wd">评审</div>
+      </div>
+      <van-cell-group>
+        <div v-if="listDtl.length>0">
+          <van-cell class="pingshen" v-for="(item,index) in listDtl" :key="index">
+            <div v-if="scoreShow">
+              <van-row>
+                <van-col span="4">分数:</van-col>
+                <van-col span="12">
+                  <van-rate v-model="item.resolutionScore" /></van-col>
+                <van-col span="4">{{item.resolutionScore}}分</van-col>
+              </van-row>
             </div>
-            <van-cell-group>
-                <div v-if="listDtl.length>0">
-                    <van-cell class="pingshen" v-for="(item,index) in listDtl" :key="index">
-                        <div v-if="scoreShow">
-                            <van-row>
-                                <van-col span="4">分数:</van-col>
-                                <van-col span="12">
-                                    <van-rate v-model="item.resolutionScore" /></van-col>
-                                <van-col span="4">{{item.resolutionScore}}分</van-col>
-                            </van-row>
-                        </div>
-                        <div>
-                            <van-row>
-                                <van-col span="4">优点:</van-col>
-                                <van-col span="18"> {{item.resolutionMerit}}</van-col>
-                            </van-row>
-                        </div>
-                        <div>
-                            <van-row>
-                                <van-col span="4">缺点:</van-col>
-                                <van-col span="18"> {{item.resolutionDefect}}</van-col>
-                            </van-row>
-                        </div>
-                        <div>
-                            <van-row>
-                                <van-col span="4">结论:</van-col>
-                                <van-col span="18">{{item.resolutionConclusion}}</van-col>
-                            </van-row>
-                        </div>
-                        <div>
-                            <van-row>
-                                <van-col span="4">评审人:</van-col>
-                                <van-col span="18">{{item.createUser}}</van-col>
-                            </van-row>
-                        </div>
-                    </van-cell>
-                </div>
-                <div v-else class="no-data">
-                    暂无评审
-                </div>
-            </van-cell-group>
-            <div class="bg-white">
-                <div class="dd-wd">问答</div>
-            </div>
-            <van-cell-group>
-                <div v-if="tiwenlist.length>0">
-
-                    <van-cell v-for="(item,index) in tiwenlist" :key="index">
-                        <div>
-                            <van-row class="wdt-title">
-                                <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
-                                <van-col span="6">{{item.createUser}}</van-col>
-                                <van-col span="12">{{item.createTime}}</van-col>
-                            </van-row>
-                            <van-row class="wd-f">
-                                <van-col span="20">{{item.quizCentent}}</van-col>
-                                <van-col span="4" class="ff" v-if="isShowFF">
-                                    <div @click="showAnswer(item.quizId)">回复</div>
-                                </van-col>
-                            </van-row>
-                            <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
-                                {{ff.createUser}}回复:{{ff.answerCentent}}
-                            </div>
-                        </div>
-                    </van-cell>
-                </div>
-                <div v-else class="no-data">
-                    暂无提问
-                </div>
-            </van-cell-group>
-        </div>
-        <div class="de-boA">
-            <div class="dflex">
-                <div class="b-cheng" @click="btn_tw">提问</div>
-                <div class="b-green" @click="btn_ps">评审</div>
-            </div>
-        </div>
-
-        <van-popup v-model="show" style="width:80%;" class="creative">
-            <div v-if="tiwenShow">
-                <div class="popup-title text-align-c">
-                    <h3>{{popupTitle}}</h3>
-                </div>
-                <van-cell-group>
-                    <van-field v-model="quizCentent" required label="提问" type="textarea" placeholder="请录入提问信息，提案名称不超过200个字" rows="6" autosize />
-                </van-cell-group>
-                <div class="div-btn">
-                    <van-button type="primary" size="newlarge" @click="btnSaveTw">发起提问
-                    </van-button>
-                </div>
-            </div>
-            <div v-if="pingshenShow">
-                <div class="popup-title text-align-c">
-                    <h3>{{popupTitle}}</h3>
-                </div>
-                <van-cell-group>
-                    <van-field type="number" min="1" max="99" required clearable label="分数" 
-                    placeholder="请输入分数1-10" v-model="psObj.resolutionScore" :error-message="psObj.resolutionScore_err" />
-                    <van-field type="textarea" maxlength="50" required clearable 
-                    label="结论" placeholder="请输入结论，不超过50字" rows="1" autosize :error-message="psObj.resolutionConclusion_err"
-                     v-model="psObj.resolutionConclusion" />
-                    <van-field type="textarea" maxlength="200" required clearable label="优点" 
-                    placeholder="请在这里录入优点，提案名称不超过200个字" :error-message="psObj.resolutionMerit_err" 
-                    v-model="psObj.resolutionMerit" rows="2" autosize />
-                    <van-field type="textarea" maxlength="200" required clearable label="缺点" 
-                    placeholder="请在这里录入优点，提案名称不超过200个字" rows="2" autosize 
-                    :error-message="psObj.resolutionDefect_err" v-model="psObj.resolutionDefect" />
-                </van-cell-group>
-                <div class="div-btn">
-                    <van-button type="primary" size="newlarge" @click="btnSavePs">发起评审
-                    </van-button>
-                </div>
-            </div>
-        </van-popup>
-        <van-popup v-model="ffshow" position="bottom">
             <div>
-                <van-cell-group>
-                    <van-field v-model="answerCentent" type="textarea" placeholder="回复" rows="1" autosize>
-                        <van-button slot="button" size="small" type="primary" @click="addAnswer()">回复</van-button>
-                    </van-field>
-                </van-cell-group>
+              <van-row>
+                <van-col span="4">优点:</van-col>
+                <van-col span="18"> {{item.resolutionMerit}}</van-col>
+              </van-row>
             </div>
-        </van-popup>
+            <div>
+              <van-row>
+                <van-col span="4">缺点:</van-col>
+                <van-col span="18"> {{item.resolutionDefect}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="4">结论:</van-col>
+                <van-col span="18">{{item.resolutionConclusion}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="4">评审人:</van-col>
+                <van-col span="18">{{item.createUser}}</van-col>
+              </van-row>
+            </div>
+          </van-cell>
+        </div>
+        <div v-else class="no-data">
+          暂无评审
+        </div>
+      </van-cell-group>
+      <div class="bg-white">
+        <div class="dd-wd">问答</div>
+      </div>
+      <van-cell-group>
+        <div v-if="tiwenlist.length>0">
+
+          <van-cell v-for="(item,index) in tiwenlist" :key="index">
+            <div>
+              <van-row class="wdt-title">
+                <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
+                <van-col span="6">{{item.createUser}}</van-col>
+                <van-col span="12">{{item.createTime}}</van-col>
+              </van-row>
+              <van-row class="wd-f">
+                <van-col span="20">{{item.quizCentent}}</van-col>
+                <van-col span="4" class="ff" v-if="isShowFF">
+                  <div @click="showAnswer(item.quizId)" style="color:blue;">回复</div>
+                </van-col>
+              </van-row>
+              <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
+                <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
+                  <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
+                </van-col>
+              </div>
+            </div>
+          </van-cell>
+        </div>
+        <div v-else class="no-data">
+          暂无提问
+        </div>
+      </van-cell-group>
+      <div style="width:100%;height:48px;background:white;"></div>
     </div>
+    <div class="de-boA" v-if="tabtnShow">
+      <div class="dflex">
+        <div class="b-cheng" @click="btn_tw">提问</div>
+        <div class="b-green" @click="btn_ps">评审</div>
+      </div>
+    </div>
+
+    <van-popup v-model="show" style="width:80%;" class="creative">
+      <div v-if="tiwenShow">
+        <div class="popup-title text-align-c">
+          <h3>{{popupTitle}}</h3>
+        </div>
+        <van-cell-group>
+          <van-field v-model="quizCentent" required label="提问" type="textarea" placeholder="请录入提问信息，提案名称不超过200个字" rows="6" autosize />
+        </van-cell-group>
+        <div class="div-btn">
+          <van-button type="primary" size="newlarge" @click="btnSaveTw">发起提问
+          </van-button>
+        </div>
+      </div>
+      <div v-if="pingshenShow">
+        <div class="popup-title text-align-c">
+          <h3>{{popupTitle}}</h3>
+        </div>
+        <van-cell-group>
+          <van-field type="number" min="1" max="99" required clearable label="分数" placeholder="请输入分数1-10" v-model="psObj.resolutionScore" :error-message="psObj.resolutionScore_err" />
+          <van-field type="textarea" maxlength="50" required clearable label="结论" placeholder="请输入结论，不超过50字" rows="1" autosize :error-message="psObj.resolutionConclusion_err" v-model="psObj.resolutionConclusion" />
+          <van-field type="textarea" maxlength="200" required clearable label="优点" placeholder="请在这里录入优点，提案名称不超过200个字" :error-message="psObj.resolutionMerit_err" v-model="psObj.resolutionMerit" rows="2" autosize />
+          <van-field type="textarea" maxlength="200" required clearable label="缺点" placeholder="请在这里录入优点，提案名称不超过200个字" rows="2" autosize :error-message="psObj.resolutionDefect_err" v-model="psObj.resolutionDefect" />
+        </van-cell-group>
+        <div class="div-btn">
+          <van-button type="primary" size="newlarge" @click="btnSavePs">发起评审
+          </van-button>
+        </div>
+      </div>
+    </van-popup>
+    <van-popup v-model="ffshow" position="bottom">
+      <div>
+        <van-cell-group>
+          <van-field v-model="answerCentent" type="textarea" placeholder="回复" rows="1" autosize>
+            <van-button slot="button" size="small" type="primary" @click="addAnswer()">回复</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+    </van-popup>
+  </div>
 </template>
 
 <script>
-import view from '../../../assets/images/smallxr0.png'
-import { ImagePreview } from "vant"
+import view from "../../../assets/images/smallxr0.png";
+import { ImagePreview } from "vant";
 import {
-    getCreativeDetails,
-    addQuizInfo,
-    addResolutionDtlInfo,
-    getQuizInfo,
-    getDecisionMaking,
-    addAnswerInfo,
-    getResolutionInfo
-} from './api'
+  getCreativeDetails,
+  addQuizInfo,
+  addResolutionDtlInfo,
+  getQuizInfo,
+  getDecisionMaking,
+  addAnswerInfo,
+  getResolutionInfo
+} from "./api";
 export default {
-    data() {
-        return {
-            msg: 'adasd',
-            show: false,
-            popupTitle: '提问',
-            tiwenShow: true,
-            pingshenShow: false,
-            message: '',
-            list: {},
-            listDtl: [],
-            decisionList: {},
-            psObj: {
-                resolutionMerit: '',
-                resolutionDefect: '',
-                resolutionScore: '',
-                resolutionConclusion: '',
-                resolutionMerit_err: '',
-                resolutionDefect_err: '',
-                resolutionScore_err: '',
-                resolutionConclusion_err: '',
-            },
-            quizCentent: '',
-            userName: '',
-            decisionId: 0,
-            resolutionId: 0,
-            tiwenlist: [],
-            toux: view,
-            isShowFF: true,
-            ffshow: false,
-            answerCentent: '',
-            imgList: [],
-            scoreShow: false
-        }
-    },
-    mounted() {
-        const that = this
-        that.resolutionId = that.$route.query.resolutionId
-        that.decisionId = that.$route.query.decisionId
-
-        that.getInit().then(() => {
-            return that.getJcInfo()
-        }).then(() => {
-            return that.getQui()
-        }).then(() => {
-            return that.getResoluInfo()
-        })
-    },
-    filters: {
-        filterFun(value) {
-            const status = {
-                '10': '提案中',
-                '20': '评审中',
-                '90': '结案'
-            }
-            return status[value]
-        }
-    },
-    methods: {
-        getInit() {
-            return new Promise((resolve, reject) => {
-                const that = this
-                const callback = res => {
-                    if (res.errcode === 0) {
-                        that.list = res.data[0]
-                        that.decisionId = res.data[0].decisionId
-                        console.log('1')
-                        for (var i = 0; i < res.data[0].pictureList.length; i++) {
-                            const a = res.data[0].pictureList[i]
-                            that.imgList.push('http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=' + a.pictureName)
-
-                        }
-                        resolve()
-                    }
-                }
-                const param = {
-                    resolutionId: that.resolutionId,
-                    resolutionType: 0,
-                    userName: that.$common.getUserInfo("userName")
-                }
-                getCreativeDetails(param).then(callback)
-            })
-        },
-        getResoluInfo() {
-            return new Promise((resolve, reject) => {
-                const that = this
-                const c = res => {
-                    if (res.errcode === 0) {
-                        that.listDtl = res.data
-                        that.decisionId = res.data[0].decisionId
-                        resolve('something')
-                    } else {
-                    }
-                }
-                const param = {
-                    resolutionId: that.resolutionId
-                }
-                getResolutionInfo(param).then(c)
-            })
-        },
-        getJcInfo() {
-            const that = this
-            console.log('2')
-            console.log(that.list.decisionId)
-            const c = res => {
-                if (res.errcode === 0) {
-                    that.decisionList = res.data[0]
-                    if (that.decisionList.statusStr === "结案") {
-                        that.scoreShow = true
-                    }
-                } else {
-                }
-            }
-            const param = {
-                decisionId: that.list.decisionId,
-                userName: that.$common.getUserInfo("userName"),
-                makType: 0
-            }
-            getDecisionMaking(param).then(c)
-        },
-        getQui() {
-            const that = this
-            const callbackA = res => {
-                if (res.errcode === 0) {
-                    that.tiwenlist = res.data
-                } else {
-                }
-            }
-            const param = {
-                resolutionId: that.resolutionId,
-                userName: that.$common.getUserInfo("userName")
-            }
-            getQuizInfo(param).then(callbackA)
-        },
-        btn_tw() {
-            this.show = true
-            this.popupTitle = '提问'
-            this.tiwenShow = true
-            this.pingshenShow = false
-        },
-        btn_ps() {
-            this.show = true
-            this.popupTitle = '评审'
-            this.pingshenShow = true
-            this.tiwenShow = false
-        },
-        btnSaveTw() {
-            const that = this
-            const callback = res => {
-                if (res.errcode === 0) {
-                    that.$toast.success(res.errmsg)
-                    that.tiwenShow = false
-                    that.show = false
-                    that.getQui(that.resolutionId)
-                }
-                else {
-                    that.$toast.fail(res.errmsg);
-                    return
-                }
-            }
-            const param = {
-                quizCentent: that.quizCentent,
-                resolutionId: that.resolutionId,
-                decisionId: that.list.decisionId,
-                createUser: that.$common.getUserInfo("userName")
-            }
-            addQuizInfo(param).then(callback)
-        },
-        btnSavePs() {
-            const that = this
-            let checklist = [
-                { domId: "resolutionMerit", msg: "请输入优点", valiType: "" },
-                { domId: "resolutionDefect", msg: "请输入缺点", valiType: "" },
-                { domId: "resolutionScore", msg: "请输入分数1-10", valiType: "" },
-                { domId: "resolutionConclusion", msg: "请输入结论", valiType: "" },
-            ]
-            if (!that.$checkVal.validateNull(that.psObj, checklist)) {
-                return;
-            }
-            if(that.psObj.resolutionScore >10 || that.psObj.resolutionScore <0){
-                that.psObj.resolutionScore_err="请输入分数1-10"
-                return;
-            }
-            const callback = res => {
-                if (res.errcode === 0) {
-                    that.$toast.success(res.errmsg)
-                    that.pingshenShow = !that.pingshenShow
-                    that.show = false
-                    window.reload()
-                }
-                else {
-                    that.$toast.fail(res.errmsg);
-                    return
-                }
-            }
-            const param = {
-                decisionId: that.list.decisionId,
-                resolutionId: that.resolutionId,
-                resolutionConclusion: that.psObj.resolutionConclusion,
-                resolutionMerit: that.psObj.resolutionMerit,
-                resolutionDefect: that.psObj.resolutionDefect,
-                resolutionScore: that.psObj.resolutionScore,
-                createUser: that.$common.getUserInfo("userName")
-            }
-            addResolutionDtlInfo(param).then(callback)
-        },
-        showAnswer(id) {
-            this.answerId = id
-            this.ffshow = !this.ffshow
-        },
-        addAnswer() {
-            const that = this
-            const c = res => {
-                if (res.errcode === 0) {
-                    that.$toast.success({
-                        message: "回复成功",
-                        duration: 2000
-                    });
-                    that.ffshow = !that.ffshow;
-                    that.getQui();
-                }
-            };
-            const param = {
-                quizId: that.answerId,
-                answerCentent: that.answerCentent,
-                createUser: that.$common.getUserInfo("userName")
-            };
-            addAnswerInfo(param).then(c);
-        },
-        imgPreview(index) {
-            const that = this;
-            ImagePreview(that.imgList);
-        }
+  data() {
+    return {
+      msg: "adasd",
+      show: false,
+      popupTitle: "提问",
+      tiwenShow: true,
+      pingshenShow: false,
+      message: "",
+      list: {},
+      listDtl: [],
+      decisionList: {},
+      psObj: {
+        resolutionMerit: "",
+        resolutionDefect: "",
+        resolutionScore: "",
+        resolutionConclusion: "",
+        resolutionMerit_err: "",
+        resolutionDefect_err: "",
+        resolutionScore_err: "",
+        resolutionConclusion_err: ""
+      },
+      quizCentent: "",
+      userName: "",
+      decisionId: 0,
+      resolutionId: 0,
+      tiwenlist: [],
+      toux: view,
+      isShowFF: false,
+      isAshowFF: false,
+      ffshow: false,
+      answerCentent: "",
+      imgList: [],
+      scoreShow: false,
+      currentName: "",
+      tabtnShow: true,
+      pageType: '',
+    };
+  },
+  mounted() {
+    const that = this;
+    that.resolutionId = that.$route.query.resolutionId;
+    that.decisionId = that.$route.query.decisionId;
+    that.currentName = that.$common.getUserInfo("userName");
+    that.pageType = that.$route.query.pageType
+    if (that.pageType === "No") {
+      that.tabtnShow = false
     }
-}
+    that
+      .getInit()
+      .then(() => {
+        return that.getJcInfo();
+      })
+      .then(() => {
+        return that.getResoluInfo();
+      })
+      .then(() => {
+        return that.getQui();
+      }).then(() => {
+        that.checkDiv()
+      })
+
+  },
+  filters: {
+    filterFun(value) {
+      const status = {
+        "10": "提案中",
+        "20": "评审中",
+        "90": "结案"
+      };
+      return status[value];
+    }
+  },
+  methods: {
+    getInit() {
+      return new Promise((resolve, reject) => {
+        const that = this;
+        const callback = res => {
+          if (res.errcode === 0) {
+            that.list = res.data[0];
+            console.log(res)
+            that.decisionId = res.data[0].decisionId;
+            that.resolutionId = res.data[0].resolutionId
+            for (var i = 0; i < res.data[0].pictureList.length; i++) {
+              const a = res.data[0].pictureList[i];
+              that.imgList.push(
+                "http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=" +
+                a.pictureName
+              );
+            }
+            resolve();
+          }
+        };
+        const param = {
+          decisionId: that.decisionId,
+          resolutionId:that.resolutionId,
+          resolutionType: 0,
+          userName: that.$common.getUserInfo("userName")
+        };
+        getCreativeDetails(param).then(callback);
+      });
+    },
+    checkDiv() {
+      const that = this;
+      if (that.list.createUser === that.$common.getUserInfo("userName")) {
+        that.isShowFF = true;
+        that.tabtnShow = false;
+      } else {
+        that.isAshowFF = true;
+      }
+    },
+    getResoluInfo() {
+      return new Promise((resolve, reject) => {
+        const that = this;
+        const c = res => {
+          if (res.errcode === 0) {
+            that.listDtl = res.data;
+            that.decisionId = res.data[0].decisionId;
+            resolve("something");
+          } else {
+            resolve("something");
+          }
+        };
+        const param = {
+          resolutionId: that.resolutionId
+        };
+        getResolutionInfo(param).then(c);
+      });
+    },
+    getJcInfo() {
+      const that = this;
+      const c = res => {
+        if (res.errcode === 0) {
+          that.decisionList = res.data[0];
+          if (that.decisionList.statusStr === "结案") {
+            that.scoreShow = true;
+            that.tabtnShow = false;
+          }
+        } else {
+        }
+      };
+      const param = {
+        decisionId: that.list.decisionId,
+        userName: that.$common.getUserInfo("userName"),
+        makType: 0
+      };
+      getDecisionMaking(param).then(c);
+    },
+    getQui() {
+      const that = this;
+      const callbackA = res => {
+        if (res.errcode === 0) {
+          that.tiwenlist = res.data;
+        } else {
+        }
+      };
+      const param = {
+        resolutionId: that.resolutionId,
+        userName: that.$common.getUserInfo("userName"),
+        makQuizType: 0
+      };
+      getQuizInfo(param).then(callbackA);
+    },
+    btn_tw() {
+      this.show = true;
+      this.popupTitle = "提问";
+      this.tiwenShow = true;
+      this.pingshenShow = false;
+    },
+    btn_ps() {
+      this.show = true;
+      this.popupTitle = "评审";
+      this.pingshenShow = true;
+      this.tiwenShow = false;
+    },
+    btnSaveTw() {
+      const that = this;
+      const callback = res => {
+        if (res.errcode === 0) {
+          that.$toast.success(res.errmsg);
+          that.tiwenShow = false;
+          that.show = false;
+          that.getQui(that.resolutionId);
+        } else {
+          that.$toast.fail(res.errmsg);
+          return;
+        }
+      };
+      const param = {
+        quizCentent: that.quizCentent,
+        resolutionId: that.resolutionId,
+        decisionId: that.list.decisionId,
+        createUser: that.$common.getUserInfo("userName")
+      };
+      addQuizInfo(param).then(callback);
+    },
+    btnSavePs() {
+      const that = this;
+      let checklist = [
+        { domId: "resolutionMerit", msg: "请输入优点", valiType: "" },
+        { domId: "resolutionDefect", msg: "请输入缺点", valiType: "" },
+        { domId: "resolutionScore", msg: "请输入分数1-10", valiType: "" },
+        { domId: "resolutionConclusion", msg: "请输入结论", valiType: "" }
+      ];
+      if (!that.$checkVal.validateNull(that.psObj, checklist)) {
+        return;
+      }
+      if (that.psObj.resolutionScore > 10 || that.psObj.resolutionScore < 0) {
+        that.psObj.resolutionScore_err = "请输入分数1-10";
+        return;
+      }
+      const callback = res => {
+        if (res.errcode === 0) {
+          that.$toast.success(res.errmsg);
+          that.pingshenShow = !that.pingshenShow;
+          that.show = false;
+          location.reload()
+        } else {
+          that.$toast.fail(res.errmsg);
+          return;
+        }
+      };
+      const param = {
+        decisionId: that.list.decisionId,
+        resolutionId: that.resolutionId,
+        resolutionConclusion: that.psObj.resolutionConclusion,
+        resolutionMerit: that.psObj.resolutionMerit,
+        resolutionDefect: that.psObj.resolutionDefect,
+        resolutionScore: that.psObj.resolutionScore,
+        createUser: that.$common.getUserInfo("userName")
+      };
+      addResolutionDtlInfo(param).then(callback);
+    },
+    showAnswer(id) {
+      this.answerId = id;
+      this.ffshow = !this.ffshow;
+    },
+    addAnswer() {
+      const that = this;
+      const c = res => {
+        if (res.errcode === 0) {
+          that.$toast.success({
+            message: "回复成功",
+            duration: 2000
+          });
+          that.ffshow = !that.ffshow;
+          that.getQui();
+        }
+      };
+      const param = {
+        quizId: that.answerId,
+        answerCentent: that.answerCentent,
+        createUser: that.$common.getUserInfo("userName")
+      };
+      addAnswerInfo(param).then(c);
+    },
+    imgPreview(index) {
+      const that = this;
+      ImagePreview(that.imgList);
+    }
+  }
+};
 </script>
 
 <style  lang="less">
 .detailsPanel {
-	height: calc(100vh - 90px);
 	overflow-x: auto;
 }
 .details {
