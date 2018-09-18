@@ -5,11 +5,16 @@
       <div slot="action" @click="onSearch">搜索</div>
     </van-search>
     <div class="popupList">
- 
+
       <van-checkbox-group v-model="list">
         <van-cell-group>
           <van-cell v-for="(item,index) in result" clickable :key="index" :title="item.userName+'(编号:'+item.userId+')'" @click="toggle(index)">
-            <van-checkbox :name="item" ref="checkboxes" />
+            <div v-if="currentName === item.userName">
+              <van-checkbox :name="item" ref="checkboxes" disabled />
+            </div>
+            <div v-else>
+              <van-checkbox :name="item" ref="checkboxes" />
+            </div>
           </van-cell>
         </van-cell-group>
       </van-checkbox-group>
@@ -19,24 +24,24 @@
 <script src="./index.js"></script>
 <style lang="less" scoped>
 .mint-searchbar-cancel {
-  transition-duration: 0.3s;
+	transition-duration: 0.3s;
 }
 .mint-cell-wrapper {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .mint-popup-right {
-  left: 0;
+	left: 0;
 }
 
 .popup {
-  .mint-cell {
-    color: #333;
-    cursor: pointer;
-  }
+	.mint-cell {
+		color: #333;
+		cursor: pointer;
+	}
 }
 .icon {
-  width: 20px;
-  margin-right: 5px;
+	width: 20px;
+	margin-right: 5px;
 }
 </style>

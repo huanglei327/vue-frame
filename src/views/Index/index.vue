@@ -84,7 +84,7 @@ export default {
           status: true,
           src: temp8,
           pages: [
-            { tname: '查看提案', url: '/MyCreative', imgn: temp3 },
+            { tname: '我的提案', url: '/MyCreative', imgn: temp3 },
             { tname: '发起提案', url: '/CreativeList', imgn: temp4 }
           ]
         },
@@ -113,31 +113,31 @@ export default {
   },
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
-    const that = this
-    if (that.$route.query.status !== '1') {
-      that.$router.push({
-        path: '/BindUser',
-        query: {
-          token: that.$route.query.token
-        }
-      })
-    }
-    else {
-      const userinfo = {
-        "id": 1,
-        "userName": decodeURI(that.$route.query.userName),
-        "token": that.$route.query.token,
-      }
-      localStorage.setItem("userInfo", JSON.stringify(userinfo))
-    }
-    that.msg = JSON.stringify(that.$route.query)
-    that.userName = decodeURI(that.$route.query.userName)
-    // const userinfo = {
-    //   "id": 1,
-    //   "userName": '张晓露',
-    //   "token": '456',
+    // const that = this
+    // if (that.$route.query.status !== '1') {
+    //   that.$router.push({
+    //     path: '/BindUser',
+    //     query: {
+    //       token: that.$route.query.token
+    //     }
+    //   })
     // }
-    // localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    // else {
+    //   const userinfo = {
+    //     "id": 1,
+    //     "userName": decodeURI(that.$route.query.userName),
+    //     "token": that.$route.query.token,
+    //   }
+    //   localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    // }
+    // that.msg = JSON.stringify(that.$route.query)
+    // that.userName = decodeURI(that.$route.query.userName)
+    const userinfo = {
+      "id": 1,
+      "userName": '张晓露',
+      "token": '456',
+    }
+    localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
   methods: {
     kindToggle: function (id) {

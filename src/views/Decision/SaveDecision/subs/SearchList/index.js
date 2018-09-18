@@ -25,7 +25,8 @@ export default {
         getSearchData().then(callback)
     },
     mounted() {
-
+        const that = this
+        that.currentName = that.$common.getUserInfo("userName")
     },
     watch: {
         value(val) {
@@ -65,8 +66,8 @@ export default {
                 that.status.tuserId += that.list[i].userId + ','
                 that.status.tuserName += that.list[i].userName + ','
             }
-            that.status.tuserId = that.status.tuserId.substring(0,that.status.tuserId.length-1)
-            that.status.tuserName = that.status.tuserName.substring(0,that.status.tuserName.length-1)
+            that.status.tuserId = that.status.tuserId.substring(0, that.status.tuserId.length - 1)
+            that.status.tuserName = that.status.tuserName.substring(0, that.status.tuserName.length - 1)
             console.log(this.status)
             this.status.SearchListPopup = false
         },

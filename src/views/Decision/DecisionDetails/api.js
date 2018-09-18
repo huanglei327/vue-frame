@@ -18,6 +18,10 @@ export function notDecisionMaking(param) {
   return post(apiName, param)
 }
 
+export function getCreativeDetails(param) {
+  const apiName = '/m_resolution/query_resolution'
+  return post(apiName, param)
+}
 
 export function addQuizInfo(param) {
   const apiName = '/m_quizInfo/addQuizInfo'

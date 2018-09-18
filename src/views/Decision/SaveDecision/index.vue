@@ -25,6 +25,13 @@
           <div class="van-field__error-message errmsg">{{status.cuserName_err}}</div>
         </template>
       </van-cell>
+      <van-cell is-link @click="showDaysPopup" :value="status.jcDays">
+        <template slot="title">
+          <span class="van-cell-text">
+            <span class="cell-s-c-red">*</span>天数</span>
+          <div class="van-field__error-message errmsg">{{status.jcDays_err}}</div>
+        </template>
+      </van-cell>
       <div>
         <div style="width:100%;overflow:hidden;">
           <ul class="up-img-ul">
@@ -55,6 +62,7 @@
     <classify-list :status="status" />
     <search-list :status="status" />
     <speople-list :status="status" />
+    <day-list :status="status" />
   </div>
 </template>
 
@@ -64,6 +72,7 @@ import { ImagePreview } from "vant";
 import classifyList from "./subs/ClassifyList/index.vue";
 import searchList from "./subs/SearchList/index.vue";
 import speopleList from "./subs/SpeopleList/index.vue";
+import dayList from "./subs/DayList/index.vue";
 export default {
   data() {
     return {
@@ -89,7 +98,11 @@ export default {
         infoName_err: "",
         jcContent: "",
         jcContent_err: "",
-        pictureNames: ""
+        pictureNames: "",
+        daysPopup: false,
+        daysPopupTitle: '天数',
+        jcDays: '',
+        jcDays_err: ""
       },
       imgdisabled: false,
       imglist: []
@@ -98,7 +111,8 @@ export default {
   components: {
     classifyList,
     searchList,
-    speopleList
+    speopleList,
+    dayList
   },
   mounted() { },
   methods: {
@@ -109,7 +123,8 @@ export default {
         { domId: "infoName", msg: "请选择决策分类", valiType: "" },
         { domId: "jcContent", msg: "请选择决策内容", valiType: "" },
         { domId: "tuserName", msg: "请选择创意提案人", valiType: "" },
-        { domId: "cuserName", msg: "请选择创意评审人", valiType: "" }
+        { domId: "cuserName", msg: "请选择创意评审人", valiType: "" },
+        { domId: "jcDays", msg: "请选择天数", valiType: "" }
       ];
 
       if (!that.$checkVal.validateNull(that.status, checklist)) {
@@ -125,7 +140,8 @@ export default {
         decisionAssessor: that.status.cuserName + "," + that.$common.getUserInfo("userName"),
         jcDate: that.$common.getCurrentTime(),
         createUser: that.$common.getUserInfo("userName"),
-        pictureNames: that.status.pictureNames
+        pictureNames: that.status.pictureNames,
+        closeTime: that.status.jcDays
       };
       const callback = res => {
         if (res.errcode === 0) {
@@ -133,7 +149,18 @@ export default {
             message: "添加成功",
             duration: 2000
           });
-          that.$router.go(-1);
+          setTimeout(() => {
+            if (res.decisionId !== "") {
+              that.$router.push({
+                path: '/DecisionDetails',
+                query: {
+                  decisionId: res.decisionId
+                }
+              })
+            } else {
+              that.$router.go(-1);
+            }
+          }, 1500);
         } else {
           alert(res.errmsg);
         }
@@ -148,6 +175,9 @@ export default {
     },
     showspeoplePopup() {
       this.status.speopleListPopup = true;
+    },
+    showDaysPopup() {
+      this.status.daysPopup = true
     },
     clearImg(item) {
       const that = this;

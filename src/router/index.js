@@ -57,7 +57,7 @@ export default new Router({
       name: 'QueryDecision',
       component: QueryDecision,
       meta:{
-        title:'查看决策'
+        title:'我的决策'
       }
     },
     {
@@ -89,7 +89,7 @@ export default new Router({
       name: 'MyCreative',
       component: MyCreative,
       meta:{
-        title:'查看提案'
+        title:'我的提案'
       }
     },
     {

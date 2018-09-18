@@ -7,7 +7,8 @@ export default {
             result: [],
             allResult: [],
             value: '',
-            list: []
+            list: [],
+            currentName:''
             //list: ['a', 'b', 'c'],
             // result: ['a', 'b']
         }
@@ -25,7 +26,8 @@ export default {
         getSearchData().then(callback)
     },
     mounted() {
-
+        const that =this 
+        that.currentName = that.$common.getUserInfo("userName")
     },
     watch: {
         value(val) {
