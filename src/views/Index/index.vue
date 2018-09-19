@@ -7,7 +7,16 @@
       <div class="kind-list">
         <div class="kind-list-item" v-for="item in list" :key="item.id">
           <div v-on:click="kindToggle(item.id)" :class="{ 'kind-list-item-hd': item.status, 'kind-list-item-hd-show': item.open }">
-            <div class="kind-list-text">{{item.name}}</div>
+            <div class="kind-list-text">
+              <van-row>
+                <van-col span="20" style="height:32px;line-height:32px;">
+                  {{item.name}}
+                </van-col>
+                <van-col span="4">
+                  <div v-if="item.bage!==''" class="bage-radius">{{item.bage}}</div>
+                </van-col>
+              </van-row>
+            </div>
             <img class="kind-list-img" :src="item.src" />
           </div>
           <div :class="{ 'kind-list-item-bd': item.status, 'kind-list-item-bd-show': item.open }">
@@ -18,7 +27,12 @@
                     <div>
                       <van-row>
                         <van-col span="6"><img :src="page.imgn" /></van-col>
-                        <van-col span="18" style="height:32px;line-height:32px;">{{page.tname}}</van-col>
+                        <van-col span="14" style="height:32px;line-height:32px;">
+                          {{page.tname}}
+                        </van-col>
+                        <van-col span="4">
+                          <div v-if="page.bage!==''" class="bage-radius">{{page.bage}}</div>
+                        </van-col>
                       </van-row>
                     </div>
                   </van-cell>
@@ -51,6 +65,9 @@ import temp7 from '../../assets/images/7.png'
 import temp8 from '../../assets/images/8.png'
 import temp9 from '../../assets/images/9.png'
 import { mapGetters, mapActions } from 'vuex';
+import {
+  getCountApi
+} from "./api";
 export default {
   name: 'HelloWorld',
   data() {
@@ -65,16 +82,20 @@ export default {
           open: false,
           status: true,
           src: temp7,
+          bage: '',
           pages: [
-            {              
+            {
               tname: '我的决策',
               url: '/QueryDecision',
-              imgn: temp1
+              imgn: temp1,
+              bage: ''
             },
-            {              
+            {
               tname: '发起决策',
               url: '/SaveDecision',
-              imgn: temp2            }
+              imgn: temp2,
+              bage: ''
+            }
           ]
         },
         {
@@ -83,9 +104,20 @@ export default {
           open: false,
           status: true,
           src: temp8,
+          bage: '',
           pages: [
-            { tname: '我的提案', url: '/MyCreative', imgn: temp3 },
-            { tname: '发起提案', url: '/CreativeList', imgn: temp4 }
+            {
+              tname: '我的提案',
+              url: '/MyCreative',
+              imgn: temp3,
+              bage: ''
+            },
+            {
+              tname: '发起提案',
+              url: '/CreativeList',
+              imgn: temp4,
+              bage: ''
+            }
           ]
         },
         {
@@ -94,8 +126,14 @@ export default {
           open: false,
           status: true,
           src: temp9,
+          bage: '',
           pages: [
-            { tname: '我的评审', url: '/ReviewList', imgn: temp5 },
+            {
+              tname: '我的评审',
+              url: '/ReviewList',
+              imgn: temp5,
+              bage: ''
+            },
           ]
         },
         {
@@ -104,8 +142,9 @@ export default {
           open: false,
           status: true,
           src: temp7,
+          bage: '',
           pages: [
-            { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6 },
+            { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6, bage: '' },
           ]
         }
       ]
@@ -113,7 +152,7 @@ export default {
   },
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
-    // const that = this
+    const that = this
     // if (that.$route.query.status !== '1') {
     //   that.$router.push({
     //     path: '/BindUser',
@@ -129,17 +168,54 @@ export default {
     //     "token": that.$route.query.token,
     //   }
     //   localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    //   that.init()
     // }
-    // that.msg = JSON.stringify(that.$route.query)
-    // that.userName = decodeURI(that.$route.query.userName)
+    that.msg = JSON.stringify(that.$route.query)
+    that.userName = decodeURI(that.$route.query.userName)
     const userinfo = {
       "id": 1,
       "userName": '张晓露',
       "token": '456',
     }
     localStorage.setItem("userInfo", JSON.stringify(userinfo))
+    that.init()
   },
   methods: {
+    init() {
+      const that = this
+      const c = res => {
+        if (res.errcode === 0) {
+          //localStorage.setItem("zycyCount", JSON.stringify(res))
+          //决策
+          if (res.notAnswerByDecisionCount !== null) {
+            that.list[0].bage = res.notAnswerByDecisionCount
+            that.list[0].pages[0].bage = res.notAnswerByDecisionCount
+          }
+          //评审
+          if (res.notReviewcount !== null) {
+            that.list[2].bage = res.notReviewcount
+            that.list[2].pages[0].bage = res.notReviewcount
+          }
+          //未回答的问题数量对提案的提问
+          if (res.notAnswerByResolutionCount !== null) {
+            that.list[1].bage = res.notAnswerByResolutionCount
+            that.list[1].pages[0].bage = res.notAnswerByResolutionCount
+          }
+          if (res.notResolutionCount !== null) {
+            that.list[1].bage = res.notResolutionCount
+            that.list[1].pages[1].bage = res.notResolutionCount
+          }
+          if (res.notAnswerByResolutionCount != null && res.notResolutionCount !== null) {
+            that.list[1].bage = parseInt(res.notResolutionCount) + parseInt(res.notAnswerByResolutionCount)
+          }
+        }
+      }
+      const param = {
+        userName: that.$common.getUserInfo("userName"),
+        queryType: 0
+      }
+      getCountApi(param).then(c)
+    },
     kindToggle: function (id) {
       let list = this.list
       for (var i = 0; i < list.length; i++) {
@@ -208,5 +284,15 @@ export default {
 		line-height: 20px;
 		color: #665858;
 	}
+}
+.bage-radius {
+	background: red;
+	color: white;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+  line-height: 22px;
+  margin-top:5px;
 }
 </style>
