@@ -152,7 +152,7 @@ export default {
   },
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
-    const that = this
+    // const that = this
     // if (that.$route.query.status !== '1') {
     //   that.$router.push({
     //     path: '/BindUser',

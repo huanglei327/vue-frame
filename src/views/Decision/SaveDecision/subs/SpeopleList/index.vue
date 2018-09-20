@@ -5,7 +5,6 @@
       <div slot="action" @click="onSearch">搜索</div>
     </van-search>
     <div class="popupList">
-
       <van-checkbox-group v-model="list">
         <van-cell-group>
           <van-cell v-for="(item,index) in result" clickable :key="index" :title="item.userName+'(编号:'+item.userId+')'" @click="toggle(index)">
