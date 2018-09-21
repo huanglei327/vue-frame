@@ -98,7 +98,9 @@ export default {
                         message: '添加成功',
                         duration: 2000
                     });
-                    that.$router.go(-1)
+                    that.$router.push({
+                        path:'/MyCreative'
+                    })
                 } else {
                     alert(res.errmsg)
                 }

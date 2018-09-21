@@ -1,7 +1,7 @@
 <template>
     <div>
         <van-tabs v-model="active" sticky @click="tabsClick">
-            <van-tab title="未发起">
+            <van-tab title="未参与">
                 <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="300">
                     <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId)">
                         <div class="d-c-title">
@@ -20,9 +20,9 @@
                     <div class="div-noshow" v-if="noDataShow">暂无数据</div>
                 </van-list>
             </van-tab>
-            <van-tab title="已发起">
+            <van-tab title="发起">
                 <van-list v-model="loading1" :finished="finished1" @load="onLoad1" :offset="300">
-                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.decisionId)">
+                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId,2)">
                         <div class="d-c-title">
                             <van-row>
                                 <van-col span="20" class="title"> {{item.decisionName}}</van-col>
@@ -44,7 +44,8 @@
 </template>
 
 <script>
-import { getDecisionMaking,getMakByResolution } from './api'
+import { getDecisionMaking, getMakByResolution } from './api'
+import { GetNotDecisionMakingApi, GetDecisionMakingListApi } from '@/utils/httpUtils/api.js'
 export default {
     data() {
         return {
@@ -77,12 +78,10 @@ export default {
                         that.noDataShow = true
                     }
                 }
-                const param ={
-                    userName:that.$common.getUserInfo("userName"),
-                    makType:1,
-                    isExistResolution:2
+                const param = {
+                    userName: that.$common.getUserInfo("userName"),
                 }
-                getMakByResolution(param).then(callback)
+                GetNotDecisionMakingApi(param).then(callback)
                 this.loading = false
                 this.finished = true
             }, 500)
@@ -91,18 +90,16 @@ export default {
             const that = this
             setTimeout(() => {
                 const callback = res => {
-                    if (res.errcode === 0 && res.data.length>0) {
+                    if (res.errcode === 0 && res.data.length > 0) {
                         that.list1 = res.data
                     } else {
                         that.noDataShow1 = true
                     }
                 }
-                 const param ={
-                    userName:that.$common.getUserInfo("userName"),
-                    makType:1,
-                    isExistResolution:1
+                const param = {
+                    userName: that.$common.getUserInfo("userName"),
                 }
-                getMakByResolution(param).then(callback)
+                GetDecisionMakingListApi(param).then(callback)
                 this.loading1 = false
                 this.finished1 = true
             }, 500)
@@ -122,21 +119,21 @@ export default {
                 this.list1 = []
             }
         },
-        goDetails(decisionId){
-             this.$router.push({
+        goDetails(decisionId, type) {
+            this.$router.push({
                 path: "/DecisionDetails",
                 query: {
                     decisionId: decisionId,
-                    
+                    type: type
                 }
             })
         },
-        goJCDetails(decisionId,resolutionId){
-              this.$router.push({
+        goJCDetails(decisionId, resolutionId) {
+            this.$router.push({
                 path: "/CreativeDetails",
                 query: {
                     decisionId: decisionId,
-                    resolutionId:resolutionId
+                    resolutionId: resolutionId
                 }
             })
         }

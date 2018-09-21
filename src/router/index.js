@@ -81,7 +81,7 @@ export default new Router({
       name: 'CreativeList',
       component: CreativeList,
       meta:{
-        title:'提案管理'
+        title:'发起提案'
       }
     },
     {

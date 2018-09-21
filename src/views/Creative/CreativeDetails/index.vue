@@ -6,7 +6,7 @@
           <div>
             <van-row>
               <van-col span="6">决策名称:</van-col>
-              <van-col span="18">{{decisionList.decisionName}}</van-col>
+              <van-col span="18">{{list.decisionName}}</van-col>
             </van-row>
           </div>
           <div>
@@ -179,6 +179,7 @@ import {
   addAnswerInfo,
   getResolutionInfo
 } from "./api";
+import { GetdecisionMakingByIdApi, getResolutionInfoApi } from '@/utils/httpUtils/api.js'
 export default {
   data() {
     return {
@@ -227,13 +228,13 @@ export default {
     if (that.pageType === "No") {
       that.tabtnShow = false
     }
-    that
-      .getInit()
+    that.getInit()
+      // .then(() => {
+      //   //return that.getJcInfo();
+      //   return that.getResoluInfo()
+      // })
       .then(() => {
-        return that.getJcInfo();
-      })
-      .then(() => {
-        return that.getResoluInfo();
+        return that.getResoluInfo()
       })
       .then(() => {
         return that.getQui();
@@ -259,7 +260,6 @@ export default {
         const callback = res => {
           if (res.errcode === 0) {
             that.list = res.data[0];
-            console.log(res)
             that.decisionId = res.data[0].decisionId;
             that.resolutionId = res.data[0].resolutionId
             for (var i = 0; i < res.data[0].pictureList.length; i++) {
@@ -274,11 +274,11 @@ export default {
         };
         const param = {
           decisionId: that.decisionId,
-          resolutionId:that.resolutionId,
-          resolutionType: 0,
-          userName: that.$common.getUserInfo("userName")
+          // resolutionId:that.resolutionId,
+          // resolutionType: 0,
+          // userName: that.$common.getUserInfo("userName")
         };
-        getCreativeDetails(param).then(callback);
+        GetdecisionMakingByIdApi(param).then(callback);
       });
     },
     checkDiv() {
@@ -297,15 +297,15 @@ export default {
           if (res.errcode === 0) {
             that.listDtl = res.data;
             that.decisionId = res.data[0].decisionId;
-            resolve("something");
+           
           } else {
-            resolve("something");
           }
+           resolve("something");
         };
         const param = {
-          resolutionId: that.resolutionId
+          resolutionId: that.$route.query.resolutionId
         };
-        getResolutionInfo(param).then(c);
+        getResolutionInfoApi(param).then(c);
       });
     },
     getJcInfo() {
@@ -336,7 +336,7 @@ export default {
         }
       };
       const param = {
-        resolutionId: that.resolutionId,
+        resolutionId: that.$route.query.resolutionId,
         userName: that.$common.getUserInfo("userName"),
         makQuizType: 0
       };

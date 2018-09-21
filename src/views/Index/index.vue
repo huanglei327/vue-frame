@@ -13,7 +13,7 @@
                   {{item.name}}
                 </van-col>
                 <van-col span="4">
-                  <div v-if="item.bage!==''" class="bage-radius">{{item.bage}}</div>
+                  <div v-if="item.bage!=='' && item.bage>0" class="bage-radius">{{item.bage}}</div>
                 </van-col>
               </van-row>
             </div>
@@ -31,7 +31,7 @@
                           {{page.tname}}
                         </van-col>
                         <van-col span="4">
-                          <div v-if="page.bage!==''" class="bage-radius">{{page.bage}}</div>
+                          <div v-if="page.bage!=='' && page.bage>0" class="bage-radius">{{page.bage}}</div>
                         </van-col>
                       </van-row>
                     </div>
@@ -152,7 +152,7 @@ export default {
   },
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
-    // const that = this
+    const that = this
     // if (that.$route.query.status !== '1') {
     //   that.$router.push({
     //     path: '/BindUser',
@@ -174,7 +174,7 @@ export default {
     that.userName = decodeURI(that.$route.query.userName)
     const userinfo = {
       "id": 1,
-      "userName": '张晓露',
+      "userName": '溜溜',
       "token": '456',
     }
     localStorage.setItem("userInfo", JSON.stringify(userinfo))
@@ -292,7 +292,7 @@ export default {
 	width: 20px;
 	height: 20px;
 	text-align: center;
-  line-height: 22px;
-  margin-top:5px;
+	line-height: 22px;
+	margin-top: 5px;
 }
 </style>

@@ -22,30 +22,30 @@
         </van-cell>
       </van-cell-group>
       <div v-if="talistShow">
-      <div class="bg-white">
-        <div class="dd-wd">提案列表</div>
-      </div>
-      <van-cell-group >
-        <div v-if="talist.length>0">
-          <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)">
-            <van-row>
-              <van-col span="20">
-                <div class="wl_c">{{item.resolutionName}}</div>
-                <van-row class="w_l_t">
-                  <van-col span="14">{{item.createTime}}</van-col>
-                  <van-col span="10">申请人:{{item.createUser}}</van-col>
-                </van-row>
-              </van-col>
-              <van-col style="height:48px" span="4">
-                {{item.statusStr}}
-              </van-col>
-            </van-row>
-          </van-cell>
+        <div class="bg-white">
+          <div class="dd-wd">提案列表</div>
         </div>
-        <div v-else class="no-data">
-          暂无提问
-        </div>
-      </van-cell-group>
+        <van-cell-group>
+          <div v-if="talist.length>0">
+            <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)">
+              <van-row>
+                <van-col span="20">
+                  <div class="wl_c">{{item.resolutionName}}</div>
+                  <van-row class="w_l_t">
+                    <van-col span="14">{{item.createTime}}</van-col>
+                    <van-col span="10">申请人:{{item.createUser}}</van-col>
+                  </van-row>
+                </van-col>
+                <van-col style="height:48px" span="4">
+                  {{item.statusStr}}
+                </van-col>
+              </van-row>
+            </van-cell>
+          </div>
+          <div v-else class="no-data">
+            暂无提案
+          </div>
+        </van-cell-group>
       </div>
       <div v-if="noJCList.length>0">
         <div class="bg-white">
@@ -128,10 +128,11 @@
     </div>
     <div class="de-bo" v-if="tianshow">
       <div class="dflex">
-        <div class="b-red" v-if="jcrShow" @click="goNoPation()">不参与</div>
+        <div class="b-red" v-if="cshow" @click="goNoPation()">不参与</div>
         <div class="b-cheng" v-if="btntiwenShow" @click="goTiWen()">提问</div>
-        <div class="b-green" v-if="btnfqta" @click="goTiAn()">发起提案</div>
+        <div class="b-green" v-if="noCshow" @click="goPation()">参与</div>
         <div class="b-green" v-if="jaShow" @click="goTiAn()">结案</div>
+        <div class="b-green" v-if="fqtaShow" @click="goTiAn()">发起提案</div>
       </div>
     </div>
     <van-popup v-model="show" style="width:80%;" class="creative">
@@ -181,6 +182,7 @@
 
 <script>
 import view from "../../../assets/images/smallxr0.png";
+import { parDecisionMakingApi, GetdecisionMakingByIdApi, getResolutionApi } from '@/utils/httpUtils/api.js'
 import { ImagePreview } from "vant";
 import {
   getDecisionMaking,
@@ -217,7 +219,10 @@ export default {
       talist: [],
       jaShow: false,
       btnfqta: true,
-      talistShow:false
+      talistShow: false,
+      cshow: true,
+      noCshow: true,
+      fqtaShow: false,
     };
   },
   mounted() {
@@ -230,7 +235,8 @@ export default {
       that.$toast.clear();
     }, 2000);
     that.getDecision().then(() => {
-      return that.getTaDetails()
+      //return that.getTaDetails()
+      return that.getResolution()
     }).then(() => {
       return that.getTiwenList()
     }).then(() => {
@@ -261,52 +267,94 @@ export default {
         };
         const param = {
           decisionId: that.$route.query.decisionId,
-          userName: that.$common.getUserInfo("userName"),
-          makType: 0
         }
-        getDecisionMaking(param).then(callback)
+        GetdecisionMakingByIdApi(param).then(callback)
       })
     },
     checkDiv() {
       return new Promise((resolve, reject) => {
+        console.log('000000000000000')
         const that = this
+        //未参与
+        if (that.list.isParticipation === 1) {
+          that.cshow = false
+          that.noCshow = false
+          that.btntiwenShow = false
+        }
+        //参与
+        if (that.list.isParticipation === 2) {
+          that.noCshow = false
+          that.cshow = false
+          that.fqtaShow = true
+        }
+        //啥也没干
+        if (that.list.isParticipation === 0) {
+        }
+        console.log(that.$route)
+        //未参与
+        if (that.$route.query.type === 1 || that.$route.query.type === "1") {
+          that.cshow = false
+          that.noCshow = false
+          that.btntiwenShow = false
+        }
+        //参与
+        if (that.$route.query.type === 2 || that.$route.query.type === "2") {
+          that.noCshow = false
+          that.cshow = false
+          that.fqtaShow = true
+        }
         if (that.list.createUser === that.$common.getUserInfo("userName")) {
           that.isShowFF = true
-          that.btntiwenShow = false
+          //that.btntiwenShow = false
           that.talistShow = true
           that.getNoJcInfo()
         }
         else {
           that.tianshow = true
-          that.jcrShow = true
           that.isAshowFF = true
 
         }
-        if (that.list.isExistsResolution === "存在") {
-          that.tianshow = false
-        }
-        var assessorA = that.list.decisionProposer
-        var temp = assessorA.split(',')
-        var num = 0
-        for (var i = 0; i < temp.length; i++) {
-          if (temp[i] === that.$common.getUserInfo("userName")) {
-            num = 1
-          }
-        }
-        if (num !== 1) {
-          that.tianshow = false
-        }
-        if (that.list.statusStr === '结案') {
-          that.tianshow = false
-        }
-        var proposerList = that.list.decisionProposer.indexOf(',')
-        if (proposerList + 1 === that.talist.length) {
-          that.jaShow = true
-          that.btnfqta = false
-          that.tianshow = true
-        }
+        // if (that.list.isExistsResolution === "存在") {
+        //   that.tianshow = false
+        // }
+        // var assessorA = that.list.decisionProposer
+        // var temp = assessorA.split(',')
+        // var num = 0
+        // for (var i = 0; i < temp.length; i++) {
+        //   if (temp[i] === that.$common.getUserInfo("userName")) {
+        //     num = 1
+        //   }
+        // }
+        // if (num !== 1) {
+        //   that.tianshow = false
+        // }
+        // if (that.list.statusStr === '结案') {
+        //   that.tianshow = false
+        // }
+        // var proposerList = that.list.decisionProposer.indexOf(',')
+        // if (proposerList + 1 === that.talist.length) {
+        //   that.jaShow = true
+        //   that.btnfqta = false
+        //   that.tianshow = true
+        // }
         resolve()
       })
+    },
+    goPation() {
+      const that = this
+      const c = res => {
+        if (res.errcode === 0) {
+          that.$toast.success("参与成功")
+          that.$router.push({
+            path:'/'
+          })
+        }
+      }
+      const param = {
+        decisionProposer: that.$common.getUserInfo("userName"),
+        decisionId: that.$route.query.decisionId
+      }
+      parDecisionMakingApi(param).then(c)
     },
     skipCreative(resolutionId, decisionId) {
       this.$router.push({
@@ -330,10 +378,26 @@ export default {
         }
         const param = {
           decisionId: that.$route.query.decisionId,
-          userName: that.$common.getUserInfo("userName"),
-          resolutionType: 0
         }
         getCreativeDetails(param).then(c)
+      })
+    },
+    getResolution() {
+      return new Promise((resolve, reject) => {
+        const that = this
+        const c = res => {
+          if (res.errcode === 0) {
+            that.talist = res.data
+
+          }
+          resolve()
+        }
+        const param = {
+          decisionId: that.$route.query.decisionId,
+          resolutionType: 0,
+
+        }
+        getResolutionApi(param).then(c)
       })
     },
     getTiwenList() {
@@ -358,7 +422,7 @@ export default {
         const param = {
           decisionId: that.$route.query.decisionId,
           userName: that.$common.getUserInfo("userName"),
-          makQuizType: 1
+          makQuizType: 0
         }
         getQuizInfoA(param).then(callbackA)
       })
@@ -414,7 +478,9 @@ export default {
             message: "提交成功",
             duration: 2000
           });
-          that.$router.go(-1);
+          that.$route.push({
+            path: '/'
+          })
           this.show = false;
           this.nocyshow = false;
         } else {
