@@ -42,7 +42,7 @@ export function queryNoJC(param) {
   const apiName = '/m_decisionMaking/query_nonparticipationInfo'
   return post(apiName, param)
 }
-export function getCountApi(param){
-  const apiName ='/m_resolution/queryCount'
-  return post(apiName,param)
-}
+export function getCloseInfo(param) {
+    const apiName = '/m_decisionMaking/query_colseInfo'
+    return post(apiName,param)
+  }

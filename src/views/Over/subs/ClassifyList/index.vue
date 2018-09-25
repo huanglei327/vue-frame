@@ -13,91 +13,95 @@
         </div>
     </van-popup>
 </template>
-<script>import { getTaInfo } from './api'
+<script>
+import { getTaInfo } from "./api";
 export default {
-    props: ['status'],
-    data() {
-        return {
-            searchValue: '',
-            result: [],
-            value: '',
-            list: []
-        }
+  props: ["status"],
+  data() {
+    return {
+      searchValue: "",
+      result: [],
+      value: "",
+      list: []
+    };
+  },
+  created() {
+    const that = this;
+    const callback = res => {
+      if (res.errcode === 0) {
+        that.result = res.data;
+        that.result.push({ resolutionName: "无", resolutionId: 0 });
+      } else {
+        // alert(res.errmsg)
+      }
+    };
+    const param = {
+      decisionId: that.status.decisionId,
+      resolutionType: 0
+    };
+    getTaInfo(param).then(callback);
+  },
+  mounted() {},
+  methods: {
+    showName(it) {
+      return it.resolutionName;
     },
-    created() {
-        const that = this
-        const callback = res => {
-            if (res.errcode === 0) {
-                that.result = res.data
-                that.result.push({ resolutionName: '无', resolutionId: 0 })
-            } else {
-                // alert(res.errmsg)
-            }
-        }
-        const param = {
-            decisionId: that.status.decisionId,
-            userName: that.$common.getUserInfo("userName"),
-            resolutionType: 0
-        }
-        getTaInfo(param).then(callback)
+    select(it) {
+      // this.searchValue = ''
+      // this.status.employeeCode = it.employeeCode
+      // this.status.employeeName = it.employeeName + `(编号:${it.employeeCode})`
+      //this.status.speopleListPopup = false
     },
-    mounted() {
-
+    getShow(item) {
+      return item.userId === this.status.cuserId;
     },
-    methods: {
-        showName(it) {
-            return it.resolutionName
-        },
-        select(it) {
-            // this.searchValue = ''
-            // this.status.employeeCode = it.employeeCode
-            // this.status.employeeName = it.employeeName + `(编号:${it.employeeCode})`
-            //this.status.speopleListPopup = false
-        },
-        getShow(item) {
-            return item.userId === this.status.cuserId
-        },
-        onSearch(value) {
-            console.log(this.value)
-        },
-        onClickLeft() {
-            const that = this
-            that.status.infoId = ''
-            that.status.infoName = ''
-            for (var i = 0; i < that.list.length; i++) {
-                that.status.infoId += that.list[i].resolutionId + ','
-                that.status.infoName += that.list[i].resolutionName + ','
-            }
-            that.status.infoId = that.status.infoId.substring(0, that.status.infoId.length - 1)
-            that.status.infoName = that.status.infoName.substring(0, that.status.infoName.length - 1)
-            this.status.classifyPopup = false
-        },
-        toggle(index) {
-            this.$refs.checkboxes[index].toggle()
-        }
+    onSearch(value) {
+      console.log(this.value);
+    },
+    onClickLeft() {
+      const that = this;
+      that.status.infoId = "";
+      that.status.infoName = "";
+      for (var i = 0; i < that.list.length; i++) {
+        that.status.infoId += that.list[i].resolutionId + ",";
+        that.status.infoName += that.list[i].resolutionName + ",";
+      }
+      that.status.infoId = that.status.infoId.substring(
+        0,
+        that.status.infoId.length - 1
+      );
+      that.status.infoName = that.status.infoName.substring(
+        0,
+        that.status.infoName.length - 1
+      );
+      this.status.classifyPopup = false;
+    },
+    toggle(index) {
+      this.$refs.checkboxes[index].toggle();
     }
-}
+  }
+};
 </script>
 <style lang="less" scoped>
 .mint-searchbar-cancel {
-	transition-duration: 0.3s;
+  transition-duration: 0.3s;
 }
 .mint-cell-wrapper {
-	font-size: 12px;
+  font-size: 12px;
 }
 
 .mint-popup-right {
-	left: 0;
+  left: 0;
 }
 
 .popup {
-	.mint-cell {
-		color: #333;
-		cursor: pointer;
-	}
+  .mint-cell {
+    color: #333;
+    cursor: pointer;
+  }
 }
 .icon {
-	width: 20px;
-	margin-right: 5px;
+  width: 20px;
+  margin-right: 5px;
 }
 </style>

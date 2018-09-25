@@ -2,7 +2,7 @@
     <div>
         <van-cell-group>
             <van-field required label="决策名称" :value="list.decisionName" type="textarea" rows="1" autosize disabled />
-            <van-field v-model="list.decisionType" required label="类型" disabled />
+            <van-field v-model="list.decisionTypeStr" required label="类型" disabled />
             <van-field required label="决策内容" :value="list.decisionContent" type="textarea" rows="1" autosize disabled/>
             <van-field v-model="list.decisionProposer" required label="创意提案人" disabled />
             <van-field v-model="list.decisionAssessor" required label="创意评审人" disabled />
@@ -53,6 +53,7 @@ export default {
         classifyList,
     },
     created() {
+        console.log( this.$route.query.decisionId)
         this.status.decisionId = this.$route.query.decisionId
 
         const that = this
@@ -106,7 +107,10 @@ export default {
                         message: '添加成功',
                         duration: 2000
                     });
-                    that.$router.go(-1)
+                    setTimeout(() => {
+                        that.$router.go(-1)
+                    }, 1000);
+                    
                 } else {
                     alert(res.errmsg)
                 }

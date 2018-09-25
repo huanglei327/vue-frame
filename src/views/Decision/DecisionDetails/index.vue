@@ -3,21 +3,27 @@
     <div class="detailsPanel">
       <van-cell-group class="details">
         <van-cell>
-          <div class="d-t">{{list.decisionName}}</div>
-          <div class="d-p">类型:{{list.decisionTypeStr}}</div>
-          <div class="d-c">
-            {{list.decisionContent}}</div>
-          <div class="d-p">时间要求:{{list.closeTime}}天</div>
-          <div class="d-p">提案人:{{list.decisionProposer}}</div>
-          <div class="d-p">评审人:{{list.decisionAssessor}}</div>
-          <div class="d-p">创建决策人:{{list.createUser}}</div>
-          <div class="d-p">创建时间:{{list.createTime}}</div>
-          <div>
-            <ul class="up-img-ul">
-              <li v-for="(item,index) in imgList" :key="index">
-                <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
-              </li>
-            </ul>
+          <div style=" position: relative;">
+            <!-- <div class="daojishi">
+            12321
+        </div> -->
+            <div class="d-t">{{list.decisionName}}</div>
+            <div class="d-p">类型:{{list.decisionTypeStr}}</div>
+            <div class="d-c">
+              {{list.decisionContent}}</div>
+            <div v-if="list.countDown!==null" class=" colored">倒计时:{{dicyTimes}}</div>
+            <div class="d-p">时间要求:{{list.closeTime}}天</div>
+            <div class="d-p">提案人:{{list.decisionProposer}}</div>
+            <div class="d-p">评审人:{{list.decisionAssessor}}</div>
+            <div class="d-p">创建决策人:{{list.createUser}}</div>
+            <div class="d-p">创建时间:{{list.createTime}}</div>
+            <div>
+              <ul class="up-img-ul">
+                <li v-for="(item,index) in imgList" :key="index">
+                  <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
+                </li>
+              </ul>
+            </div>
           </div>
         </van-cell>
       </van-cell-group>
@@ -131,7 +137,7 @@
         <div class="b-red" v-if="cshow" @click="goNoPation()">不参与</div>
         <div class="b-cheng" v-if="btntiwenShow" @click="goTiWen()">提问</div>
         <div class="b-green" v-if="noCshow" @click="goPation()">参与</div>
-        <div class="b-green" v-if="jaShow" @click="goTiAn()">结案</div>
+        <div class="b-green" v-if="jaShow" @click="goJieAn()">结案</div>
         <div class="b-green" v-if="fqtaShow" @click="goTiAn()">发起提案</div>
       </div>
     </div>
@@ -182,7 +188,11 @@
 
 <script>
 import view from "../../../assets/images/smallxr0.png";
-import { parDecisionMakingApi, GetdecisionMakingByIdApi, getResolutionApi } from '@/utils/httpUtils/api.js'
+import {
+  parDecisionMakingApi,
+  GetdecisionMakingByIdApi,
+  getResolutionApi
+} from "@/utils/httpUtils/api.js";
 import { ImagePreview } from "vant";
 import {
   getDecisionMaking,
@@ -223,6 +233,7 @@ export default {
       cshow: true,
       noCshow: true,
       fqtaShow: false,
+      dicyTimes: ""
     };
   },
   mounted() {
@@ -234,14 +245,18 @@ export default {
     setTimeout(() => {
       that.$toast.clear();
     }, 2000);
-    that.getDecision().then(() => {
-      //return that.getTaDetails()
-      return that.getResolution()
-    }).then(() => {
-      return that.getTiwenList()
-    }).then(() => {
-      return that.checkDiv()
-    })
+    that
+      .getDecision()
+      .then(() => {
+        //return that.getTaDetails()
+        return that.getResolution();
+      })
+      .then(() => {
+        return that.getTiwenList();
+      })
+      .then(() => {
+        return that.checkDiv();
+      });
     // getDecisionMaking(param)
     //   .then(callback)
     //   .then(that.getTiwenList())
@@ -250,73 +265,95 @@ export default {
   methods: {
     getDecision() {
       return new Promise((resolve, reject) => {
-        const that = this
+        const that = this;
         const callback = res => {
           if (res.errcode === 0) {
             that.$toast.clear();
             that.list = res.data[0];
             for (var i = 0; i < res.data[0].pictureList.length; i++) {
-              const a = res.data[0].pictureList[i]
-              that.imgList.push('http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=' + a.pictureName)
+              const a = res.data[0].pictureList[i];
+              that.imgList.push(
+                "http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=" +
+                a.pictureName
+              );
             }
-            //that.checkDiv()
-
+            if (that.list.countDown !== null) {
+              that.dicyTimes = that.list.countDown;
+              that.calculateDate(1);
+            }
           } else {
           }
-          resolve()
+          resolve();
         };
-        const param = {
+        var param = {
           decisionId: that.$route.query.decisionId,
+          userName: that.$common.getUserInfo("userName")
+        };
+        if (that.$route.query.deciType === "weicanyu") {
+          param.queryType = 1;
         }
-        GetdecisionMakingByIdApi(param).then(callback)
-      })
+        if (that.$route.query.deciType === "yicanyu") {
+          param.queryType = 2;
+        }
+        if (that.$route.query.deciType === "待结案") {
+          param.queryType = 3;
+        }
+
+        GetdecisionMakingByIdApi(param).then(callback);
+      });
     },
     checkDiv() {
       return new Promise((resolve, reject) => {
-        console.log('000000000000000')
-        const that = this
+        const that = this;
         //未参与
         if (that.list.isParticipation === 1) {
-          that.cshow = false
-          that.noCshow = false
-          that.btntiwenShow = false
+          that.cshow = false;
+          that.noCshow = false;
+          that.btntiwenShow = false;
         }
         //参与
         if (that.list.isParticipation === 2) {
-          that.noCshow = false
-          that.cshow = false
-          that.fqtaShow = true
+          that.noCshow = false;
+          that.cshow = false;
+          that.fqtaShow = true;
         }
         //啥也没干
         if (that.list.isParticipation === 0) {
         }
-        console.log(that.$route)
+        console.log(that.$route);
         //未参与
         if (that.$route.query.type === 1 || that.$route.query.type === "1") {
-          that.cshow = false
-          that.noCshow = false
-          that.btntiwenShow = false
+          that.cshow = false;
+          that.noCshow = false;
+          that.btntiwenShow = false;
         }
         //参与
         if (that.$route.query.type === 2 || that.$route.query.type === "2") {
-          that.noCshow = false
-          that.cshow = false
-          that.fqtaShow = true
+          that.noCshow = false;
+          that.cshow = false;
+          that.fqtaShow = true;
         }
         if (that.list.createUser === that.$common.getUserInfo("userName")) {
-          that.isShowFF = true
-          //that.btntiwenShow = false
-          that.talistShow = true
-          that.getNoJcInfo()
+          that.isShowFF = true;
+          that.btntiwenShow = false
+          that.talistShow = true;
+          that.getNoJcInfo();
+        } else {
+          that.tianshow = true;
+          that.isAshowFF = true;
         }
-        else {
-          that.tianshow = true
-          that.isAshowFF = true
-
+        if (that.$route.query.deciType === 'weicanyu') {
+          that.isAshowFF = false;
         }
-        // if (that.list.isExistsResolution === "存在") {
-        //   that.tianshow = false
-        // }
+        if (that.$route.query.isExistsResolution === "存在") {
+          that.fqtaShow = false;
+        }
+        if (that.$route.query.statusStr === "待结案") {
+          that.cshow = false;
+          that.btntiwenShow = false;
+          that.noCshow = false;
+          that.jaShow = true;
+        }
         // var assessorA = that.list.decisionProposer
         // var temp = assessorA.split(',')
         // var num = 0
@@ -337,24 +374,33 @@ export default {
         //   that.btnfqta = false
         //   that.tianshow = true
         // }
-        resolve()
-      })
+        resolve();
+      });
+    },
+    calculateDate(type) {
+      const that = this;
+      let clock = window.setInterval(() => {
+        //console.log("启动");
+        that.dicyTimes = that.$common.DateClculate(that.dicyTimes);
+      }, 1000);
+      if (type === 2) {
+        console.log("关闭");
+        window.clearInterval(clock);
+      }
     },
     goPation() {
-      const that = this
+      const that = this;
       const c = res => {
         if (res.errcode === 0) {
-          that.$toast.success("参与成功")
-          that.$router.push({
-            path:'/'
-          })
+          that.$toast.success("参与成功");
+          that.$router.go(-1)
         }
-      }
+      };
       const param = {
         decisionProposer: that.$common.getUserInfo("userName"),
         decisionId: that.$route.query.decisionId
-      }
-      parDecisionMakingApi(param).then(c)
+      };
+      parDecisionMakingApi(param).then(c);
     },
     skipCreative(resolutionId, decisionId) {
       this.$router.push({
@@ -362,43 +408,40 @@ export default {
         query: {
           resolutionId: resolutionId,
           decisionId: decisionId,
-          pageType: 'No'
+          pageType: "No"
         }
       });
     },
     getTaDetails() {
       return new Promise((resolve, reject) => {
-        const that = this
+        const that = this;
         const c = res => {
           if (res.errcode === 0) {
-            that.talist = res.data
-
+            that.talist = res.data;
           }
-          resolve()
-        }
+          resolve();
+        };
         const param = {
-          decisionId: that.$route.query.decisionId,
-        }
-        getCreativeDetails(param).then(c)
-      })
+          decisionId: that.$route.query.decisionId
+        };
+        getCreativeDetails(param).then(c);
+      });
     },
     getResolution() {
       return new Promise((resolve, reject) => {
-        const that = this
+        const that = this;
         const c = res => {
           if (res.errcode === 0) {
-            that.talist = res.data
-
+            that.talist = res.data;
           }
-          resolve()
-        }
+          resolve();
+        };
         const param = {
           decisionId: that.$route.query.decisionId,
-          resolutionType: 0,
-
-        }
-        getResolutionApi(param).then(c)
-      })
+          resolutionType: 0
+        };
+        getResolutionApi(param).then(c);
+      });
     },
     getTiwenList() {
       return new Promise((resolve, reject) => {
@@ -408,37 +451,36 @@ export default {
             that.tiwenlist = res.data;
             that.tiwenlist.forEach(item => {
               if (item.createUser === that.$common.getUserInfo("userName")) {
-                that.btntiwenShow = false
+                that.btntiwenShow = false;
               }
-            })
+            });
 
-            that.$toast.clear()
-
+            that.$toast.clear();
           } else {
-            that.$toast.clear()
+            that.$toast.clear();
           }
-          resolve()
+          resolve();
         };
         const param = {
           decisionId: that.$route.query.decisionId,
           userName: that.$common.getUserInfo("userName"),
-          makQuizType: 0
-        }
-        getQuizInfoA(param).then(callbackA)
-      })
+          makQuizType: 1
+        };
+        getQuizInfoA(param).then(callbackA);
+      });
     },
     getNoJcInfo() {
-      const that = this
+      const that = this;
       const c = res => {
         if (res.errcode === 0) {
-          that.noJCList = res.data
+          that.noJCList = res.data;
         }
-      }
+      };
       const param = {
         decisionId: that.$route.query.decisionId,
         isParticipationResolution: 1
-      }
-      queryNoJC(param).then(c)
+      };
+      queryNoJC(param).then(c);
     },
     goTiWen() {
       this.show = true;
@@ -446,12 +488,18 @@ export default {
       this.nocyshow = false;
     },
     btnSaveTw() {
+
       const that = this;
+      if (that.quizCentent.replace(/\s+/g, "") === "") {
+        that.$toast.fail('请输入提问的内容');
+        return;
+      }
       const callback = res => {
         if (res.errcode === 0) {
           that.$toast.success(res.errmsg);
           that.tiwenShow = false;
           that.show = false;
+          that.quizCentent=''
           that.getTiwenList();
         } else {
           that.$toast.fail(res.errmsg);
@@ -470,17 +518,33 @@ export default {
       this.nocyshow = true;
       this.twshow = false;
     },
+    goJieAn() {
+      const that = this;
+      console.log(that.$route.query.decisionId);
+      that.$router.push({
+        path: "/Over",
+        query: {
+          decisionId: that.$route.query.decisionId
+        }
+      });
+    },
     btnNoPation() {
       const that = this;
+
+      if (that.remarks.replace(/\s+/g, "") === "") {
+        that.$toast.fail('请输入不参与的内容');
+        return;
+      }
       const callback = res => {
         if (res.errcode === 0) {
           that.$toast.success({
             message: "提交成功",
             duration: 2000
           });
+          that.remarks= ''
           that.$route.push({
-            path: '/'
-          })
+            path: "/MyCreative"
+          });
           this.show = false;
           this.nocyshow = false;
         } else {
@@ -495,7 +559,7 @@ export default {
       const param = {
         decisionId: that.$route.query.decisionId,
         decisionProposer: that.$common.getUserInfo("userName"),
-        remarks: this.remarks
+        remarks: that.remarks
       };
       notDecisionMaking(param).then(callback);
     },
@@ -513,6 +577,10 @@ export default {
     },
     addAnswer() {
       const that = this;
+      if (that.answerCentent.replace(/\s+/g, "") === "") {
+        that.$toast.fail('请输入回复的内容');
+        return;
+      }
       const c = res => {
         if (res.errcode === 0) {
           that.$toast.success({
@@ -540,6 +608,19 @@ export default {
 <style lang="less">
 .detailsPanel {
 	overflow-x: auto;
+}
+.daojishi {
+	background: url(../../../assets/images/score.png) no-repeat;
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	/* background-size: contain; */
+	background-size: contain;
+	top: 0px;
+	right: 0px;
+	color: white;
+	text-align: center;
+	line-height: 30px;
 }
 .details {
 	div {
@@ -620,6 +701,7 @@ export default {
 	margin-top: 10px;
 	background: url(../../../assets/images/bgcolor_sta02.png) no-repeat;
 	background-size: contain;
+	z-index: 2;
 }
 .wd-f {
 	word-wrap: break-word;

@@ -3,7 +3,7 @@
         <van-tabs v-model="active" sticky @click="tabsClick">
             <van-tab title="未参与">
                 <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="300">
-                    <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId)">
+                    <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId,0,'weicanyu')">
                         <div class="d-c-title">
                             <van-row>
                                 <van-col span="20" class="title"> {{item.decisionName}}</van-col>
@@ -22,7 +22,7 @@
             </van-tab>
             <van-tab title="发起">
                 <van-list v-model="loading1" :finished="finished1" @load="onLoad1" :offset="300">
-                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId,2)">
+                    <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goDetails(item.decisionId,2,'yicanyu')">
                         <div class="d-c-title">
                             <van-row>
                                 <van-col span="20" class="title"> {{item.decisionName}}</van-col>
@@ -119,12 +119,13 @@ export default {
                 this.list1 = []
             }
         },
-        goDetails(decisionId, type) {
+        goDetails(decisionId, type,deciType) {
             this.$router.push({
                 path: "/DecisionDetails",
                 query: {
                     decisionId: decisionId,
-                    type: type
+                    type: type,
+                    deciType:deciType
                 }
             })
         },

@@ -132,17 +132,26 @@ export default {
       }
       if (that.status.pictureNames != '')
         that.status.pictureNames = that.status.pictureNames.substring(0, that.status.pictureNames.length - 1)
-      const DecisionMaking = {
+      var DecisionMaking = {
         decisionName: that.status.jcName,
         decisionType: that.status.infoId,
         decisionContent: that.status.jcContent,
         decisionProposer: that.status.tuserName + "," + that.$common.getUserInfo("userName"),
-        decisionAssessor: that.status.cuserName + "," + that.$common.getUserInfo("userName"),
+        decisionAssessor: that.status.cuserName + "," + that.status.tuserName + ',' + that.$common.getUserInfo("userName"),
         jcDate: that.$common.getCurrentTime(),
         createUser: that.$common.getUserInfo("userName"),
         pictureNames: that.status.pictureNames,
         closeTime: that.status.jcDays
       };
+
+      var temps = DecisionMaking.decisionAssessor.split(',')
+      var newTemp = []
+      for (var i = 0; i < temps.length; i++) {
+        if (newTemp.indexOf(temps[i]) === -1) {
+          newTemp.push(temps[i])
+        }
+      }
+      DecisionMaking.decisionAssessor = newTemp.join(',')
       const callback = res => {
         if (res.errcode === 0) {
           that.$toast.success({
@@ -154,7 +163,9 @@ export default {
               that.$router.push({
                 path: '/DecisionDetails',
                 query: {
-                  decisionId: res.decisionId
+                  decisionId: res.decisionId,
+                  type: 2,
+                  deciType: 'yicanyu'
                 }
               })
             } else {

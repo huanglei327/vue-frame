@@ -40,6 +40,9 @@ body {
  .up-img-ul {
   padding-left: 10px;
 }
+.colored{
+  color: red;
+}
 .up-img-ul li {
   float: left;
   border: 1px solid #f5f5f5;
@@ -51,6 +54,9 @@ body {
 }
 .font12{
   font-size:12px;
+}
+.font16{
+  font-size:16px;
 }
 .t-indet25{
   text-indent: 25px;

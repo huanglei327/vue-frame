@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="detailsPanel">
-      <van-cell-group class="details">
-        <van-cell class="details">
+      <van-collapse v-model="activeNames">
+        <van-collapse-item title="决策信息" name="0" class="details">
           <div>
             <van-row>
               <van-col span="6">决策名称:</van-col>
@@ -11,26 +11,35 @@
           </div>
           <div>
             <van-row>
-              <van-col span="6">提案名称:</van-col>
-              <van-col span="18">{{list.resolutionName}}</van-col>
+              <van-col span="6">决策类型:</van-col>
+              <van-col span="18">{{list.decisionTypeStr}}</van-col>
             </van-row>
           </div>
           <div>
             <van-row>
-              <van-col span="6">提案内容:</van-col>
-              <van-col span="18">{{list.resolutionContent}}</van-col>
+              <van-col span="6">决策内容:</van-col>
+              <van-col span="18">{{list.decisionContent}}</van-col>
             </van-row>
           </div>
+
           <div>
             <van-row>
-              <van-col span="6">提案人:</van-col>
+              <van-col span="6">时间要求:</van-col>
+              <van-col span="18">{{list.closeTime}}天</van-col>
+            </van-row>
+          </div>
+
+          <div>
+            <van-row>
+              <van-col span="6">决策人:</van-col>
               <van-col span="18">{{list.createUser}}</van-col>
             </van-row>
           </div>
+
           <div>
             <van-row>
-              <van-col span="6">提案时间:</van-col>
-              <van-col span="18">{{list.createTime}}</van-col>
+              <van-col span="6">创建时间:</van-col>
+              <van-col span="18">{{listDtl.createTime}}</van-col>
             </van-row>
           </div>
           <ul class="up-img-ul">
@@ -39,89 +48,120 @@
             </li>
 
           </ul>
-        </van-cell>
-      </van-cell-group>
-      <div class="bg-white">
-        <div class="dd-wd">评审</div>
-      </div>
-      <van-cell-group>
-        <div v-if="listDtl.length>0">
-          <van-cell class="pingshen" v-for="(item,index) in listDtl" :key="index">
-            <div v-if="scoreShow">
-              <van-row>
-                <van-col span="4">分数:</van-col>
-                <van-col span="12">
-                  <van-rate v-model="item.resolutionScore" /></van-col>
-                <van-col span="4">{{item.resolutionScore}}分</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">优点:</van-col>
-                <van-col span="18"> {{item.resolutionMerit}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">缺点:</van-col>
-                <van-col span="18"> {{item.resolutionDefect}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">结论:</van-col>
-                <van-col span="18">{{item.resolutionConclusion}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">评审人:</van-col>
-                <van-col span="18">{{item.createUser}}</van-col>
-              </van-row>
-            </div>
-          </van-cell>
-        </div>
-        <div v-else class="no-data">
-          暂无评审
-        </div>
-      </van-cell-group>
-      <div class="bg-white">
-        <div class="dd-wd">问答</div>
-      </div>
-      <van-cell-group>
-        <div v-if="tiwenlist.length>0">
+        </van-collapse-item>
+        <van-collapse-item title="提案信息" name="1">
+          <div class="details">
 
-          <van-cell v-for="(item,index) in tiwenlist" :key="index">
             <div>
-              <van-row class="wdt-title">
-                <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
-                <van-col span="6">{{item.createUser}}</van-col>
-                <van-col span="12">{{item.createTime}}</van-col>
+              <van-row>
+                <van-col span="6">提案名称:</van-col>
+                <van-col span="18">{{listDtl.resolutionName}}</van-col>
               </van-row>
-              <van-row class="wd-f">
-                <van-col span="20">{{item.quizCentent}}</van-col>
-                <van-col span="4" class="ff" v-if="isShowFF">
-                  <div @click="showAnswer(item.quizId)" style="color:blue;">回复</div>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="6">提案内容:</van-col>
+                <van-col span="18">{{listDtl.resolutionContent}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="6">提案时间:</van-col>
+                <van-col span="18">{{listDtl.createTime}}</van-col>
+              </van-row>
+            </div>
+            <div>
+              <van-row>
+                <van-col span="6">倒计时:</van-col>
+                <van-col span="18">
+                  <span class="colored">{{dicyTimes}}</span>
                 </van-col>
               </van-row>
-              <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
-                <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
-                <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
-                  <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
-                </van-col>
+            </div>
+            <ul class="up-img-ul">
+              <li v-for="(item,index) in tianImgList" :key="index">
+                <img width="70px" height="90px" @click="imgPreviewTiAn(index)" :src="item">
+              </li>
+
+            </ul>
+          </div>
+        </van-collapse-item>
+        <van-collapse-item title="评审" name="2">
+          <div v-if="psList.length>0">
+            <div class="details" v-for="(item,index) in psList" :key="index">
+              <div v-if="scoreShow">
+                <van-row>
+                  <van-col span="4">分数:</van-col>
+                  <van-col span="12">
+                    <van-rate v-model="item.resolutionScore" /></van-col>
+                  <van-col span="4">{{item.score}}分</van-col>
+                </van-row>
+              </div>
+              <div>
+                <van-row>
+                  <van-col span="4">优点:</van-col>
+                  <van-col span="18"> {{item.resolutionMerit}}</van-col>
+                </van-row>
+              </div>
+              <div>
+                <van-row>
+                  <van-col span="4">缺点:</van-col>
+                  <van-col span="18"> {{item.resolutionDefect}}</van-col>
+                </van-row>
+              </div>
+              <div>
+                <van-row>
+                  <van-col span="4">结论:</van-col>
+                  <van-col span="18">{{item.resolutionConclusion}}</van-col>
+                </van-row>
+              </div>
+              <div>
+                <van-row>
+                  <van-col span="4">评审人:</van-col>
+                  <van-col span="18">{{item.createUser}}</van-col>
+                </van-row>
               </div>
             </div>
-          </van-cell>
-        </div>
-        <div v-else class="no-data">
-          暂无提问
-        </div>
-      </van-cell-group>
+          </div>
+          <div v-else class="no-data">
+            暂无评审
+          </div>
+        </van-collapse-item>
+        <van-collapse-item title="问答" name="3">
+          <div v-if="tiwenlist.length>0">
+
+            <div v-for="(item,index) in tiwenlist" :key="index">
+              <div>
+                <van-row class="wdt-title">
+                  <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
+                  <van-col span="6">{{item.createUser}}</van-col>
+                  <van-col span="12">{{item.createTime}}</van-col>
+                </van-row>
+                <van-row class="wd-f">
+                  <van-col span="20">{{item.quizCentent}}</van-col>
+                  <van-col span="4" class="ff" v-if="isShowFF">
+                    <div @click="showAnswer(item.quizId)" style="color:blue;">回复</div>
+                  </van-col>
+                </van-row>
+                <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
+                  <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                  <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
+                    <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
+                  </van-col>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else class="no-data">
+            暂无提问
+          </div>
+        </van-collapse-item>
+      </van-collapse>
       <div style="width:100%;height:48px;background:white;"></div>
     </div>
     <div class="de-boA" v-if="tabtnShow">
       <div class="dflex">
-        <div class="b-cheng" @click="btn_tw">提问</div>
+        <div class="b-cheng" v-if="istiwenshow" @click="btn_tw">提问</div>
         <div class="b-green" @click="btn_ps">评审</div>
       </div>
     </div>
@@ -169,6 +209,7 @@
 
 <script>
 import view from "../../../assets/images/smallxr0.png";
+import { getResolutionApi } from "@/utils/httpUtils/api.js";
 import { ImagePreview } from "vant";
 import {
   getCreativeDetails,
@@ -179,10 +220,15 @@ import {
   addAnswerInfo,
   getResolutionInfo
 } from "./api";
-import { GetdecisionMakingByIdApi, getResolutionInfoApi } from '@/utils/httpUtils/api.js'
+import {
+  GetdecisionMakingByIdApi,
+  getResolutionInfoApi,
+  getPSInfoApi
+} from "@/utils/httpUtils/api.js";
 export default {
   data() {
     return {
+      activeNames: ["1", "0", "2", "3"],
       msg: "adasd",
       show: false,
       popupTitle: "提问",
@@ -213,10 +259,14 @@ export default {
       ffshow: false,
       answerCentent: "",
       imgList: [],
+      tianImgList: [],
       scoreShow: false,
       currentName: "",
       tabtnShow: true,
-      pageType: '',
+      pageType: "",
+      psList: [],
+      dicyTimes: '',
+      istiwenshow: true
     };
   },
   mounted() {
@@ -224,24 +274,28 @@ export default {
     that.resolutionId = that.$route.query.resolutionId;
     that.decisionId = that.$route.query.decisionId;
     that.currentName = that.$common.getUserInfo("userName");
-    that.pageType = that.$route.query.pageType
+    that.pageType = that.$route.query.pageType;
     if (that.pageType === "No") {
-      that.tabtnShow = false
+      that.tabtnShow = false;
     }
-    that.getInit()
+    that
+      .getInit()
       // .then(() => {
       //   //return that.getJcInfo();
       //   return that.getResoluInfo()
       // })
       .then(() => {
-        return that.getResoluInfo()
+        return that.getResoluInfo();
       })
       .then(() => {
         return that.getQui();
-      }).then(() => {
-        that.checkDiv()
       })
-
+      .then(() => {
+        return that.getPSInfo();
+      })
+      .then(() => {
+        that.checkDiv();
+      });
   },
   filters: {
     filterFun(value) {
@@ -261,7 +315,7 @@ export default {
           if (res.errcode === 0) {
             that.list = res.data[0];
             that.decisionId = res.data[0].decisionId;
-            that.resolutionId = res.data[0].resolutionId
+            that.resolutionId = res.data[0].resolutionId;
             for (var i = 0; i < res.data[0].pictureList.length; i++) {
               const a = res.data[0].pictureList[i];
               that.imgList.push(
@@ -273,7 +327,7 @@ export default {
           }
         };
         const param = {
-          decisionId: that.decisionId,
+          decisionId: that.decisionId
           // resolutionId:that.resolutionId,
           // resolutionType: 0,
           // userName: that.$common.getUserInfo("userName")
@@ -283,29 +337,63 @@ export default {
     },
     checkDiv() {
       const that = this;
-      if (that.list.createUser === that.$common.getUserInfo("userName")) {
+      console.log(that.listDtl.createUser)
+      console.log(that.$common.getUserInfo("userName"))
+      console.log('---')
+      if (that.listDtl.createUser === that.$common.getUserInfo("userName")) {
         that.isShowFF = true;
-        that.tabtnShow = false;
+        that.tiwenShow = false
+        // that.tabtnShow = false;
+        that.istiwenshow = false;
       } else {
         that.isAshowFF = true;
       }
+    },
+    getPSInfo() {
+      return new Promise((resolve, reject) => {
+        const that = this;
+        const c = res => {
+          if (res.errcode === 0) {
+            that.psList = res.data;
+          } else {
+          }
+          resolve("something");
+        };
+        const param = {
+          resolutionId: that.$route.query.resolutionId,
+        };
+
+        getResolutionInfoApi(param).then(c);
+      });
     },
     getResoluInfo() {
       return new Promise((resolve, reject) => {
         const that = this;
         const c = res => {
           if (res.errcode === 0) {
-            that.listDtl = res.data;
+            that.listDtl = res.data[0];
             that.decisionId = res.data[0].decisionId;
-           
+            for (var i = 0; i < res.data[0].pictureList.length; i++) {
+              const a = res.data[0].pictureList[i];
+              that.tianImgList.push(
+                "http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=" +
+                a.pictureName
+              );
+            }
+            if (that.listDtl.countDown !== null) {
+              that.dicyTimes = that.listDtl.countDown;
+              that.calculateDate(1);
+            }
           } else {
           }
-           resolve("something");
+          resolve("something");
         };
         const param = {
-          resolutionId: that.$route.query.resolutionId
+          resolutionId: that.$route.query.resolutionId,
+          resolutionType: 0,
+          countDownUserName: that.$common.getUserInfo("userName")
         };
-        getResolutionInfoApi(param).then(c);
+        getResolutionApi(param).then(c);
       });
     },
     getJcInfo() {
@@ -327,20 +415,34 @@ export default {
       };
       getDecisionMaking(param).then(c);
     },
-    getQui() {
+    calculateDate(type) {
       const that = this;
-      const callbackA = res => {
-        if (res.errcode === 0) {
-          that.tiwenlist = res.data;
-        } else {
-        }
-      };
-      const param = {
-        resolutionId: that.$route.query.resolutionId,
-        userName: that.$common.getUserInfo("userName"),
-        makQuizType: 0
-      };
-      getQuizInfo(param).then(callbackA);
+      let clock = window.setInterval(() => {
+        //console.log("启动");
+        that.dicyTimes = that.$common.DateClculate(that.dicyTimes);
+      }, 1000);
+      if (type === 2) {
+        console.log("关闭");
+        window.clearInterval(clock);
+      }
+    },
+    getQui() {
+      return new Promise((resolve, reject) => {
+        const that = this;
+        const callbackA = res => {
+          if (res.errcode === 0) {
+            that.tiwenlist = res.data;
+          } else {
+          }
+          resolve();
+        };
+        const param = {
+          resolutionId: that.$route.query.resolutionId,
+          userName: that.$common.getUserInfo("userName"),
+          makQuizType: 0
+        };
+        getQuizInfo(param).then(callbackA);
+      });
     },
     btn_tw() {
       this.show = true;
@@ -356,11 +458,17 @@ export default {
     },
     btnSaveTw() {
       const that = this;
+      if (that.quizCentent.replace(/\s+/g, "") === "") {
+        that.$toast.fail('请输入提问的内容');
+        return;
+      }
+
       const callback = res => {
         if (res.errcode === 0) {
           that.$toast.success(res.errmsg);
           that.tiwenShow = false;
           that.show = false;
+          that.quizCentent = ''
           that.getQui(that.resolutionId);
         } else {
           that.$toast.fail(res.errmsg);
@@ -369,7 +477,7 @@ export default {
       };
       const param = {
         quizCentent: that.quizCentent,
-        resolutionId: that.resolutionId,
+        resolutionId: that.$route.query.resolutionId,
         decisionId: that.list.decisionId,
         createUser: that.$common.getUserInfo("userName")
       };
@@ -395,7 +503,7 @@ export default {
           that.$toast.success(res.errmsg);
           that.pingshenShow = !that.pingshenShow;
           that.show = false;
-          location.reload()
+          location.reload();
         } else {
           that.$toast.fail(res.errmsg);
           return;
@@ -403,7 +511,7 @@ export default {
       };
       const param = {
         decisionId: that.list.decisionId,
-        resolutionId: that.resolutionId,
+        resolutionId: that.$route.query.resolutionId,
         resolutionConclusion: that.psObj.resolutionConclusion,
         resolutionMerit: that.psObj.resolutionMerit,
         resolutionDefect: that.psObj.resolutionDefect,
@@ -418,12 +526,17 @@ export default {
     },
     addAnswer() {
       const that = this;
+      if (that.answerCentent.replace(/\s+/g, "") === "") {
+        that.$toast.fail('请输入回复的内容');
+        return;
+      }
       const c = res => {
         if (res.errcode === 0) {
           that.$toast.success({
             message: "回复成功",
             duration: 2000
           });
+          that.answerCentent = ''
           that.ffshow = !that.ffshow;
           that.getQui();
         }
@@ -438,6 +551,10 @@ export default {
     imgPreview(index) {
       const that = this;
       ImagePreview(that.imgList);
+    },
+    imgPreviewTiAn(index) {
+      const that = this;
+      ImagePreview(that.tianImgList);
     }
   }
 };
@@ -446,11 +563,22 @@ export default {
 <style  lang="less">
 .detailsPanel {
 	overflow-x: auto;
+	.van-collapse-item {
+		background: white;
+	}
+	.van-collapse-item__title {
+		background: url(../../../assets/images/bgcolor_sta02.png) no-repeat;
+		background-size: contain;
+		color: white;
+	}
+	.van-col--18 {
+		color: #656363;
+	}
 }
 .details {
 	div {
 		//border-bottom: 1px solid #333;
-		line-height: 30px;
+		line-height: 25px;
 	}
 	.d-t {
 		text-align: center;
@@ -465,37 +593,39 @@ export default {
 		font-size: 12px;
 		color: #666;
 	}
+	.van-collapse-item__content {
+		padding: 5px 10px;
+	}
 }
 .de-boA {
 	position: fixed;
 	bottom: 0px;
 	margin-top: 10px;
-	height: calc(100vh-100px);
 	width: 100%;
 	.van-button--small {
-		height: 40px;
+		height: 45px;
 		line-height: 38px;
 		width: 33.3%;
 	}
 	.dflex {
 		display: flex;
-		height: 40px;
+		height: 45px;
 		div {
-			width: 50%;
-			height: 40px;
-			line-height: 38px;
+			width: 100%;
+			height: 45px;
+			line-height: 43px;
 			text-align: center;
 			color: white;
 		}
 		.b-red {
 			background: #f44;
+			//	border-radius: 5px 0 0 0;
 		}
 		.b-cheng {
-			border-radius: 5px 0 0 0;
 			background: #ff7f00;
 		}
 		.b-green {
-			border-radius: 0 5px 0 0;
+			//	border-radius: 0 5px 0 0;
 			background: rgb(77, 201, 46);
 		}
 	}

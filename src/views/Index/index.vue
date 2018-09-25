@@ -2,6 +2,7 @@
   <div class="index">
     <div class="portrait-list">
       <div class="portrait-img"></div>
+      {{msg}}--{{userName}}
     </div>
     <div class="index-bd">
       <div class="kind-list">
@@ -47,188 +48,254 @@
 </template>
 
 <script>
-import view from '../../assets/images/view.png'
-import content from '../../assets/images/content.png'
-import form from '../../assets/images/form.png'
-import nav from '../../assets/images/nav.png'
-import media from '../../assets/images/media.png'
-import map from '../../assets/images/map.png'
-import canvas from '../../assets/images/canvas.png'
-import photo from '../../assets/images/logo.jpg'
-import temp1 from '../../assets/images/1.png'
-import temp2 from '../../assets/images/2.png'
-import temp3 from '../../assets/images/3.png'
-import temp4 from '../../assets/images/4.png'
-import temp5 from '../../assets/images/5.png'
-import temp6 from '../../assets/images/6.png'
-import temp7 from '../../assets/images/7.png'
-import temp8 from '../../assets/images/8.png'
-import temp9 from '../../assets/images/9.png'
-import { mapGetters, mapActions } from 'vuex';
-import {
-  getCountApi
-} from "./api";
+import view from "../../assets/images/view.png";
+import content from "../../assets/images/content.png";
+import form from "../../assets/images/form.png";
+import nav from "../../assets/images/nav.png";
+import media from "../../assets/images/media.png";
+import map from "../../assets/images/map.png";
+import canvas from "../../assets/images/canvas.png";
+import photo from "../../assets/images/logo.jpg";
+import temp1 from "../../assets/images/1.png";
+import temp2 from "../../assets/images/2.png";
+import temp3 from "../../assets/images/3.png";
+import temp4 from "../../assets/images/4.png";
+import temp5 from "../../assets/images/5.png";
+import temp6 from "../../assets/images/6.png";
+import temp7 from "../../assets/images/7.png";
+import temp8 from "../../assets/images/8.png";
+import temp9 from "../../assets/images/9.png";
+import { mapGetters, mapActions } from "vuex";
+import { getCountApi } from "./api";
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   data() {
     return {
-      photo: '../../assets/logo.jpg',
-      msg: 'test',
-      userName: '',
+      photo: "../../assets/logo.jpg",
+      msg: "test",
+      userName: "",
       list: [
         {
-          id: 'view',
-          name: '决策管理',
+          id: "view",
+          name: "决策管理",
           open: false,
           status: true,
           src: temp7,
-          bage: '',
+          bage: "",
           pages: [
             {
-              tname: '我的决策',
-              url: '/QueryDecision',
+              tname: "我的决策",
+              url: "/QueryDecision",
               imgn: temp1,
-              bage: ''
+              bage: ""
             },
             {
-              tname: '发起决策',
-              url: '/SaveDecision',
+              tname: "发起决策",
+              url: "/SaveDecision",
               imgn: temp2,
-              bage: ''
+              bage: ""
             }
           ]
         },
         {
-          id: '2',
-          name: '创意提案管理',
+          id: "2",
+          name: "创意提案管理",
           open: false,
           status: true,
           src: temp8,
-          bage: '',
+          bage: "",
           pages: [
             {
-              tname: '我的提案',
-              url: '/MyCreative',
+              tname: "我的提案",
+              url: "/MyCreative",
               imgn: temp3,
-              bage: ''
+              bage: ""
             },
             {
-              tname: '发起提案',
-              url: '/CreativeList',
+              tname: "发起提案",
+              url: "/CreativeList",
               imgn: temp4,
-              bage: ''
+              bage: ""
             }
           ]
         },
         {
-          id: '3',
-          name: '创意评审',
+          id: "3",
+          name: "创意评审",
           open: false,
           status: true,
           src: temp9,
-          bage: '',
+          bage: "",
           pages: [
             {
-              tname: '我的评审',
-              url: '/ReviewList',
+              tname: "我的评审",
+              url: "/ReviewList",
               imgn: temp5,
-              bage: ''
-            },
+              bage: ""
+            }
           ]
         },
         {
-          id: '4',
-          name: '结案管理',
+          id: "4",
+          name: "结案管理",
           open: false,
           status: true,
           src: temp7,
-          bage: '',
+          bage: "",
           pages: [
-            { tname: '我的结案', url: '/QueryDecision?type=over', imgn: temp6, bage: '' },
+            {
+              tname: "我的结案",
+              url: "/OverList",
+              imgn: temp6,
+              bage: ""
+            }
           ]
         }
       ]
-    }
+    };
   },
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
-    const that = this
-    // if (that.$route.query.status !== '1') {
-    //   that.$router.push({
-    //     path: '/BindUser',
-    //     query: {
-    //       token: that.$route.query.token
-    //     }
-    //   })
-    // }
-    // else {
-    //   const userinfo = {
-    //     "id": 1,
-    //     "userName": decodeURI(that.$route.query.userName),
-    //     "token": that.$route.query.token,
-    //   }
-    //   localStorage.setItem("userInfo", JSON.stringify(userinfo))
-    //   that.init()
-    // }
-    that.msg = JSON.stringify(that.$route.query)
-    that.userName = decodeURI(that.$route.query.userName)
-    const userinfo = {
-      "id": 1,
-      "userName": '溜溜',
-      "token": '456',
+    const that = this;
+    if (that.$route.query.status !== "1") {
+      that.$router.push({
+        path: "/BindUser",
+        query: {
+          token: that.$route.query.token
+        }
+      });
+    } else {
+      const userinfo = {
+        id: 1,
+        userName: decodeURI(that.$route.query.userName),
+        token: that.$route.query.token
+      };
+      localStorage.setItem("userInfo", JSON.stringify(userinfo));
+      that.init();
     }
-    localStorage.setItem("userInfo", JSON.stringify(userinfo))
-    that.init()
+    that.msg = JSON.stringify(that.$route.query);
+
+    // const userinfo = {
+    //   id: 1,
+    //   userName: "谢二",
+    //   token: "456"
+    // };
+    // localStorage.setItem("userInfo", JSON.stringify(userinfo));
+    // that.init();
   },
   methods: {
     init() {
-      const that = this
+      const that = this;
       const c = res => {
         if (res.errcode === 0) {
           //localStorage.setItem("zycyCount", JSON.stringify(res))
           //决策
           if (res.notAnswerByDecisionCount !== null) {
-            that.list[0].bage = res.notAnswerByDecisionCount
-            that.list[0].pages[0].bage = res.notAnswerByDecisionCount
+            that.list[0].bage = res.notAnswerByDecisionCount;
+            that.list[0].pages[0].bage = res.notAnswerByDecisionCount;
           }
           //评审
           if (res.notReviewcount !== null) {
-            that.list[2].bage = res.notReviewcount
-            that.list[2].pages[0].bage = res.notReviewcount
+            that.list[2].bage = res.notReviewcount;
+            that.list[2].pages[0].bage = res.notReviewcount;
           }
           //未回答的问题数量对提案的提问
           if (res.notAnswerByResolutionCount !== null) {
-            that.list[1].bage = res.notAnswerByResolutionCount
-            that.list[1].pages[0].bage = res.notAnswerByResolutionCount
+            that.list[1].bage = res.notAnswerByResolutionCount;
+            that.list[1].pages[0].bage = res.notAnswerByResolutionCount;
           }
           if (res.notResolutionCount !== null) {
-            that.list[1].bage = res.notResolutionCount
-            that.list[1].pages[1].bage = res.notResolutionCount
+            that.list[1].bage = res.notResolutionCount;
+            that.list[1].pages[1].bage = res.notResolutionCount;
           }
-          if (res.notAnswerByResolutionCount != null && res.notResolutionCount !== null) {
-            that.list[1].bage = parseInt(res.notResolutionCount) + parseInt(res.notAnswerByResolutionCount)
+          if (
+            res.notAnswerByResolutionCount != null &&
+            res.notResolutionCount !== null
+          ) {
+            that.list[1].bage =
+              parseInt(res.notResolutionCount) +
+              parseInt(res.notAnswerByResolutionCount);
           }
         }
-      }
+        that.checkQuery();
+        //决策提醒
+      };
       const param = {
         userName: that.$common.getUserInfo("userName"),
         queryType: 0
+      };
+      getCountApi(param).then(c);
+    },
+    checkQuery() {
+      const that = this;
+      if (that.$route.query.remindtype !== "") {
+        localStorage.setItem("wocaonima", that.$route.query.remindtype)
+
+        if (that.$route.query.remindtype === "proposal") {
+          that.$router.push({
+            path: "/CreativeList",
+            query: {
+              decisionId: that.$route.query.decisionId
+            }
+          });
+        }
+        if (that.$route.query.remindtype === "review") {
+          that.$router.push({
+            path: "/ReviewList"
+          });
+        }
+        if (that.$route.query.remindtype === "close") {
+          that.$router.push({
+            path: "/DecisionDetails",
+            query: {
+              decisionId: that.$route.query.decisionId,
+              statusStr: '待结案'
+            }
+          });
+        }
+        if (that.$route.query.remindtype === "decisionQuiz") {
+          that.$router.push({
+            path: "/CreativeList",
+            query: {
+              decisionId: that.$route.query.decisionId
+            }
+          });
+        }
+        if (that.$route.query.remindtype === "resolutionQuiz") {
+          that.$router.push({
+            path: "/ReviewList"
+          });
+        }
+        if (that.$route.query.remindtype === "decisionAnswer") {
+          that.$router.push({
+            path: "/CreativeList",
+            query: {
+              decisionId: that.$route.query.decisionId
+            }
+          });
+        }
+        if (that.$route.query.remindtype === "resolutionAnswer") {
+          that.$router.push({
+            path: "/ReviewList",
+          });
+        }
+        localStorage.setItem("caodanStorage", "1");
       }
-      getCountApi(param).then(c)
+      that.userName = localStorage.getItem("wocaonima")
     },
     kindToggle: function (id) {
-      let list = this.list
+      let list = this.list;
       for (var i = 0; i < list.length; i++) {
         if (list[i].id == id) {
-          list[i].open = !list[i].open
+          list[i].open = !list[i].open;
         } else {
-          list[i].open = false
+          list[i].open = false;
         }
       }
-      this.list = list
+      this.list = list;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

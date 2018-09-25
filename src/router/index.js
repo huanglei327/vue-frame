@@ -13,7 +13,9 @@ import Over from '../views/Over/index.vue'
 import DecisionDetails from '../views/Decision/DecisionDetails/index.vue'
 import BindUser from '../views/BindUser/index.vue'
 import ReviewList from '../views/Creative/ReviewList/index.vue'
-
+import OverInfo from '../views/OverInfo/index.vue'
+import OverList from '../views/OverList/index.vue'
+import ReviewDicyList from '../views/Creative/ReviewDicyList/index.vue'
 
 Vue.use(Router)
 
@@ -109,6 +111,22 @@ export default new Router({
       }
     },
     {
+      path:'/OverInfo',
+      name:'OverInfo',
+      component:OverInfo,
+      mate:{
+        title:"决策明细"
+      }
+    },
+    {
+      path:'/OverList',
+      name:'OverList',
+      component:OverList,
+      mate:{
+        title:'结案信息'
+      }
+    },
+    {
       path: '/Remind',
       name: 'Remind',
       component: Remind,
@@ -120,6 +138,14 @@ export default new Router({
       path: '/ReviewList',
       name: 'ReviewList',
       component: ReviewList,
+      meta:{
+        title:'创意评审'
+      }
+    },
+    {
+      path: '/ReviewDicyList',
+      name: 'ReviewDicyList',
+      component: ReviewDicyList,
       meta:{
         title:'创意评审'
       }

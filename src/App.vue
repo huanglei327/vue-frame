@@ -7,13 +7,11 @@
 
 <script>
 import "./assets/css/common.css";
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'App',
+  name: "App",
   data() {
-    return {
-
-    }
+    return {};
   },
   created() {
     // const userinfo = {
@@ -22,7 +20,7 @@ export default {
     // }
     // localStorage.setItem("userInfo", JSON.stringify(userinfo))
   },
-  mounted: function () {
+  mounted: function() {
     // this.$toast.loading({
     //   mask: true,
     //   message: '加载中...',
@@ -30,25 +28,24 @@ export default {
     // });
   },
 
-  computed: { ...mapGetters(['navtitle', 'left_arrow', 'left_text']) },
+  computed: { ...mapGetters(["navtitle", "left_arrow", "left_text"]) },
   methods: {
-    onClickLeft: function () {
-      //if(this.navtitle === '首页')
+    onClickLeft: function() {
       this.$router.go(-1)
     },
-    onClickRight: function () {
-      console.log('onClickRight-')
+    onClickRight: function() {
+      console.log("onClickRight-");
     }
   }
-}
+};
 </script>
 
 <style>
 #app {
-	font-family: 'Avenir', Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #2c3e50;
-	margin-top: 46px;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 46px;
 }
 </style>

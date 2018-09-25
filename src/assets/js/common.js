@@ -6,6 +6,16 @@ export function count_time(time1, time2) {
     return Math.abs(parseInt((time2 - time1) / 1000 / 3600 / 24));
 }
 
+export function DateClculate(date) {
+    var t = new Date(getCurrentTime() + ' ' + date);//你已知的时间
+    var t_s = t.getTime();//转化为时间戳毫秒数
+    t.setTime(t_s - 1000);
+    //return t
+    var housr = t.getHours()
+    var minutes= t.getMinutes()
+    var second = t.getSeconds()
+    return p(housr) + ":" + p(minutes) + ":" + p(second); 
+}
 
 export function getWeekByDate(date) {
     var day = new Date(Date.parse(date));   //需要正则转换的则 此处为 ： var day = new Date(Date.parse(date.replace(/-/g, '/')));  
@@ -106,13 +116,13 @@ export function getMyDateByStr(str, type) {
     return oTime;
 }
 
-export function statusById(index){
-     const status = {
-         '10':'提案中',
-         '20':'评审中',
-         '90':'结案'
-     }
-     return status[index]
+export function statusById(index) {
+    const status = {
+        '10': '提案中',
+        '20': '评审中',
+        '90': '结案'
+    }
+    return status[index]
 }
 
 //补0操作

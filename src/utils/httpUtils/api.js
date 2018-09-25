@@ -29,13 +29,20 @@ export function GetdecisionMakingByIdApi(param) {
 }
 
 //查询提案明细
-export function getResolutionInfoApi(param){
-    const apiName ='/m_resolutionDtl/query_resolutionDtl'
-    return post(apiName,param)
+export function getResolutionInfoApi(param) {
+    const apiName = '/m_resolutionDtl/query_resolutionDtl'
+    return post(apiName, param)
 }
 
 //查询提案列表
-export function getResolutionApi(param){
-    const apiName ='/m_resolution/query_resolution'
-    return post(apiName,param)
+export function getResolutionApi(param) {
+    const apiName = '/m_resolution/query_resolution'
+    return post(apiName, param)
+}
+
+
+//查询评审信息
+export function getPSInfoApi(param) {
+    const apiName = '/m_resolution/query_assessor'
+    return post(apiName, param)
 }
