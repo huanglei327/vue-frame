@@ -49,14 +49,13 @@
               </div>
               <img width="70px" height="90px" :src="item" @click="imgPreview(item)">
             </li>
-
           </ul>
         </div>
         <div class="van-field__error-message" style="line-height:24px;padding-left:100px;"></div>
       </div>
     </van-cell-group>
     <div class="div-btn">
-      <van-button type="primary" size="newlarge" @click="btnGoJC">发起决策
+      <van-button type="primary" size="newlarge" @click="btnGoJC" :disabled="jcdisabled">发起决策
       </van-button>
     </div>
     <classify-list :status="status" />
@@ -78,6 +77,7 @@ export default {
     return {
       value: "1",
       checked: true,
+      jcdisabled: false,
       status: {
         infoId: 0,
         classifyPopup: false,
@@ -118,6 +118,10 @@ export default {
   methods: {
     btnGoJC() {
       const that = this;
+      that.jcdisabled = true
+      setTimeout(() => {
+        that.jcdisabled = false
+      }, 1500);
       let checklist = [
         { domId: "jcName", msg: "请输入决策名称", valiType: "" },
         { domId: "infoName", msg: "请选择决策分类", valiType: "" },

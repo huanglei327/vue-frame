@@ -3,7 +3,7 @@
     <van-tabs v-model="active" sticky @click="tabsClick">
       <van-tab title="未完成">
         <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="300">
-          <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId,item.score,item.decisionId)">
+          <van-cell v-for="item in list" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId,item.score,item.decisionId,1)">
             <div style="position:relative;">
               <div class="d-c-title">
                 <van-row>
@@ -26,7 +26,7 @@
       </van-tab>
       <van-tab title="已完成">
         <van-list v-model="loading1" :finished="finished1" @load="onLoad1" :offset="300">
-          <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId,item.score,item.decisionId)">
+          <van-cell v-for="item in list1" :key="item.id" style="margin-top:5px;" @click="goJCDetails(item.resolutionId,item.score,item.decisionId,2)">
             <div style="position:relative;">
               <div class="d-c-title">
                 <van-row>
@@ -87,11 +87,11 @@ export default {
               var temp = false;
               for (var j = 0; j < that.list.length; j++) {
                 if (res.data[i].decisionId === that.list[j].decisionId) {
-                  temp = true
+                  temp = true;
                 }
               }
               if (temp === false) {
-                that.list.push(res.data[i])
+                that.list.push(res.data[i]);
               }
             }
           } else {
@@ -118,15 +118,14 @@ export default {
               if (that.list1.length > 0) {
                 for (var j = 0; j < that.list1.length; j++) {
                   if (res.data[i].decisionId === that.list1[j].decisionId) {
-                    temp = true
+                    temp = true;
                   }
                 }
               }
               if (temp === false) {
-                that.list1.push(res.data[i])
+                that.list1.push(res.data[i]);
               }
             }
-
           } else {
             that.noDataShow1 = true;
           }
@@ -163,14 +162,15 @@ export default {
         }
       });
     },
-    goJCDetails(resolutionId, score, decisionId) {
+    goJCDetails(resolutionId, score, decisionId, type) {
       if (score > 0) var pageType = "No";
       this.$router.push({
         path: "/ReviewDicyList",
         query: {
           resolutionId: resolutionId,
           pageType: pageType,
-          decisionId: decisionId
+          decisionId: decisionId,
+          type: type
         }
       });
     }
@@ -179,33 +179,33 @@ export default {
 </script>
 <style lang="less">
 .d-c-title {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	.title {
-		font-size: 14px;
-		color: #333;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		padding-right: 5px;
-	}
-	.status {
-		font-size: 12px;
-	}
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  .title {
+    font-size: 14px;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 5px;
+  }
+  .status {
+    font-size: 12px;
+  }
 }
 .div-score {
-	background: url(../../../assets/images/score.png) no-repeat;
-	position: absolute;
-	width: 30px;
-	height: 30px;
-	/* background-size: contain; */
-	background-size: contain;
-	top: 0px;
-	right: 0px;
-	color: white;
-	text-align: center;
-	line-height: 30px;
+  background: url(../../../assets/images/score.png) no-repeat;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  /* background-size: contain; */
+  background-size: contain;
+  top: 0px;
+  right: 0px;
+  color: white;
+  text-align: center;
+  line-height: 30px;
 }
 </style>
 

@@ -9,13 +9,14 @@
         </van-cell-group>
         <div style="margin-top:10px;"></div>
         <van-cell-group>
-            <van-cell is-link @click="showspeoplePopup" :value="status.infoName">
+            <van-field v-model="list.optimalResolutionName" required label="最优创意提案" disabled />
+            <!-- <van-cell is-link @click="showspeoplePopup" :value="status.infoName">
                 <template slot="title">
                     <span class="van-cell-text">
                         <span class="cell-s-c-red">*</span>最优创意提案</span>
                     <div class="van-field__error-message errmsg">{{status.infoName_err}}</div>
                 </template>
-            </van-cell>
+            </van-cell>-->
             <van-field required label="最终结案" type="textarea" placeholder="请录入最优创意提案,不超过30个字" rows="1" autosize v-model="status.finalResolutionName" :error-message="status.finalResolutionName_err" />
         </van-cell-group>
 
@@ -53,7 +54,7 @@ export default {
         classifyList,
     },
     created() {
-        console.log( this.$route.query.decisionId)
+        console.log(this.$route.query.decisionId)
         this.status.decisionId = this.$route.query.decisionId
 
         const that = this
@@ -85,7 +86,6 @@ export default {
             this.status.classifyPopup = true
         },
         btnGoOver() {
-            console.log(this.$common.MathRand(5))
             const that = this
             let checklist = [
                 { domId: 'finalResolutionName', msg: '最终结案', valiType: '' },
@@ -98,7 +98,7 @@ export default {
             const DecisionMaking = {
                 decisionId: that.$route.query.decisionId,
                 finalResolutionName: that.status.finalResolutionName,
-                optimalResolutionName: that.status.infoName,
+                optimalResolutionName: that.list.optimalResolutionName,
                 updateUser: that.$common.getUserInfo("userName")
             }
             const callback = res => {
@@ -108,9 +108,14 @@ export default {
                         duration: 2000
                     });
                     setTimeout(() => {
-                        that.$router.go(-1)
+                        that.$router.push({
+                            path: '/DecisionDetails',
+                            query: {
+                                statusStr: 'yijiean',
+                                decisionId: this.$route.query.decisionId,
+                            }
+                        })
                     }, 1000);
-                    
                 } else {
                     alert(res.errmsg)
                 }

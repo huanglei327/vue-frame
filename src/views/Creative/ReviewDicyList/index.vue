@@ -142,7 +142,7 @@ export default {
                     assessorType: 1,
                     decisionId: that.$route.query.decisionId
                 };
-                if (that.$route.query.pageType === 'No') {
+                if (that.$route.query.type === 2 || that.$route.query.type === '2') {
                     param.assessorType = 2
                 }
                 GetDecisionList(param).then(callback);

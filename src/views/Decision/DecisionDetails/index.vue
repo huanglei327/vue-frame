@@ -11,7 +11,7 @@
             <div class="d-p">类型:{{list.decisionTypeStr}}</div>
             <div class="d-c">
               {{list.decisionContent}}</div>
-            <div v-if="list.countDown!==null" class=" colored">倒计时:{{dicyTimes}}</div>
+            <div v-if="list.countDown!==null" class=" colored">倒计时:{{timesValue}}</div>
             <div class="d-p">时间要求:{{list.closeTime}}天</div>
             <div class="d-p">提案人:{{list.decisionProposer}}</div>
             <div class="d-p">评审人:{{list.decisionAssessor}}</div>
@@ -33,7 +33,7 @@
         </div>
         <van-cell-group>
           <div v-if="talist.length>0">
-            <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)">
+            <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)"  v-bind:class="{ 'bgsbred': index===0,  }">
               <van-row>
                 <van-col span="20">
                   <div class="wl_c">{{item.resolutionName}}</div>
@@ -43,7 +43,9 @@
                   </van-row>
                 </van-col>
                 <van-col style="height:48px" span="4">
-                  {{item.statusStr}}
+                  <div> {{item.statusStr}}</div>
+                   <div >{{item.score}}分</div>
+                  <div >{{item.score}}分</div>
                 </van-col>
               </van-row>
             </van-cell>
@@ -95,42 +97,43 @@
           </div>
         </van-cell-group>
       </div>
-      <div class="bg-white">
-        <div class="dd-wd">问答</div>
-      </div>
-      <van-cell-group>
-        <div v-if="tiwenlist.length>0">
-          <van-cell v-for="(item,index) in tiwenlist" :key="index">
-            <div>
-              <van-row class="wdt-title">
-                <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
-                <van-col span="6">{{item.createUser}}</van-col>
-                <van-col span="12">{{item.createTime}}</van-col>
-              </van-row>
-              <van-row class="wd-f">
-                <van-col span="20">{{item.quizCentent}}</van-col>
-                <van-col span="4" class="ff" v-if="isShowFF">
-                  <div @click="showAnswer(item.quizId)">回复</div>
-                </van-col>
-              </van-row>
-              <!-- <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
+      <div v-if="tiwenlistshow">
+        <div class="bg-white">
+          <div class="dd-wd">问答</div>
+        </div>
+        <van-cell-group>
+          <div v-if="tiwenlist.length>0">
+            <van-cell v-for="(item,index) in tiwenlist" :key="index">
+              <div>
+                <van-row class="wdt-title">
+                  <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
+                  <van-col span="6">{{item.createUser}}</van-col>
+                  <van-col span="12">{{item.createTime}}</van-col>
+                </van-row>
+                <van-row class="wd-f">
+                  <van-col span="20">{{item.quizCentent}}</van-col>
+                  <van-col span="4" class="ff" v-if="isShowFF">
+                    <div @click="showAnswer(item.quizId)">回复</div>
+                  </van-col>
+                </van-row>
+                <!-- <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
                 {{ff.createUser}}回复:{{ff.answerCentent}}
               </div> -->
-              <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
-                <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
-                <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
-                  <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
-                </van-col>
+                <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
+                  <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                  <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
+                    <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
+                  </van-col>
+                </div>
               </div>
-            </div>
-          </van-cell>
-        </div>
-        <div v-else class="no-data">
-          暂无提问
-        </div>
-        <div style="width:100%;height:48px;"></div>
-      </van-cell-group>
-
+            </van-cell>
+          </div>
+          <div v-else class="no-data">
+            暂无提问
+          </div>
+          <div style="width:100%;height:48px;"></div>
+        </van-cell-group>
+      </div>
     </div>
     <div class="de-bo" v-if="tianshow">
       <div class="dflex">
@@ -162,7 +165,8 @@
           <!-- <van-field :value="list.decisionName" required clearable label="创意提案名称" disabled /> -->
           <div>
             <van-row>
-              <van-col span="6" class="wdt-toux">创意提案名称 </van-col>
+              <van-col span="6" class="wdt-toux" style="text-align:center;"><div>创意提</div>
+              <div>案名称</div> </van-col>
               <van-col span="18">{{list.decisionName}}</van-col>
             </van-row>
           </div>
@@ -233,7 +237,9 @@ export default {
       cshow: true,
       noCshow: true,
       fqtaShow: false,
-      dicyTimes: ""
+      dicyTimes: "",
+      timesValue: '',
+      tiwenlistshow: true,
     };
   },
   mounted() {
@@ -257,10 +263,6 @@ export default {
       .then(() => {
         return that.checkDiv();
       });
-    // getDecisionMaking(param)
-    //   .then(callback)
-    //   .then(that.getTiwenList())
-    //   .then(that.getTaDetails())
   },
   methods: {
     getDecision() {
@@ -277,8 +279,8 @@ export default {
                 a.pictureName
               );
             }
-            if (that.list.countDown !== null) {
-              that.dicyTimes = that.list.countDown;
+            if (that.list.countDown !== null && that.list.countDown!=="0") {
+              that.dicyTimes = that.$common.DateClculateA(that.list.countDown);
               that.calculateDate(1);
             }
           } else {
@@ -335,14 +337,14 @@ export default {
         }
         if (that.list.createUser === that.$common.getUserInfo("userName")) {
           that.isShowFF = true;
-          that.btntiwenShow = false
+          that.btntiwenShow = false;
           that.talistShow = true;
           that.getNoJcInfo();
         } else {
           that.tianshow = true;
           that.isAshowFF = true;
         }
-        if (that.$route.query.deciType === 'weicanyu') {
+        if (that.$route.query.deciType === "weicanyu") {
           that.isAshowFF = false;
         }
         if (that.$route.query.isExistsResolution === "存在") {
@@ -353,6 +355,16 @@ export default {
           that.btntiwenShow = false;
           that.noCshow = false;
           that.jaShow = true;
+        }
+        if (that.$route.query.pageType === "No") {
+          that.tianshow = false
+          that.tiwenlistshow = false
+        }
+        if(that.$route.query.statusStr==="yijiean"){
+          that.cshow = false;
+          that.btntiwenShow = false;
+          that.noCshow = false;
+          that.jaShow = false;
         }
         // var assessorA = that.list.decisionProposer
         // var temp = assessorA.split(',')
@@ -381,7 +393,8 @@ export default {
       const that = this;
       let clock = window.setInterval(() => {
         //console.log("启动");
-        that.dicyTimes = that.$common.DateClculate(that.dicyTimes);
+        that.dicyTimes = that.$common.DateClculateB(that.dicyTimes, 1000);
+        that.timesValue = that.$common.DateClculate(that.dicyTimes)
       }, 1000);
       if (type === 2) {
         console.log("关闭");
@@ -393,7 +406,18 @@ export default {
       const c = res => {
         if (res.errcode === 0) {
           that.$toast.success("参与成功");
-          that.$router.go(-1)
+          //that.$router.go(-1);
+          setTimeout(() => {
+            that.$router.push({
+              path: "/DecisionDetails",
+              query: {
+                decisionId: that.$route.query.decisionId,
+                type: 2,
+                deciType: "yicanyu"
+              }
+            });
+            that.checkDiv()
+          }, 1500);
         }
       };
       const param = {
@@ -434,13 +458,13 @@ export default {
           if (res.errcode === 0) {
             that.talist = res.data;
           }
-          resolve();
         };
         const param = {
           decisionId: that.$route.query.decisionId,
           resolutionType: 0
         };
         getResolutionApi(param).then(c);
+        resolve();
       });
     },
     getTiwenList() {
@@ -450,7 +474,7 @@ export default {
           if (res.errcode === 0) {
             that.tiwenlist = res.data;
             that.tiwenlist.forEach(item => {
-              if (item.createUser === that.$common.getUserInfo("userName")) {
+              if (item.createUser === that.$common.getUserInfo("userName") && (that.$route.query.type===0 || that.$route.query.type==='0')) {
                 that.btntiwenShow = false;
               }
             });
@@ -488,10 +512,9 @@ export default {
       this.nocyshow = false;
     },
     btnSaveTw() {
-
       const that = this;
       if (that.quizCentent.replace(/\s+/g, "") === "") {
-        that.$toast.fail('请输入提问的内容');
+        that.$toast.fail("请输入提问的内容");
         return;
       }
       const callback = res => {
@@ -499,7 +522,7 @@ export default {
           that.$toast.success(res.errmsg);
           that.tiwenShow = false;
           that.show = false;
-          that.quizCentent=''
+          that.quizCentent = "";
           that.getTiwenList();
         } else {
           that.$toast.fail(res.errmsg);
@@ -530,9 +553,8 @@ export default {
     },
     btnNoPation() {
       const that = this;
-
       if (that.remarks.replace(/\s+/g, "") === "") {
-        that.$toast.fail('请输入不参与的内容');
+        that.$toast.fail("请输入不参与的内容");
         return;
       }
       const callback = res => {
@@ -541,8 +563,8 @@ export default {
             message: "提交成功",
             duration: 2000
           });
-          that.remarks= ''
-          that.$route.push({
+          that.remarks = "";
+          that.$router.push({
             path: "/MyCreative"
           });
           this.show = false;
@@ -578,7 +600,7 @@ export default {
     addAnswer() {
       const that = this;
       if (that.answerCentent.replace(/\s+/g, "") === "") {
-        that.$toast.fail('请输入回复的内容');
+        that.$toast.fail("请输入回复的内容");
         return;
       }
       const c = res => {
@@ -744,6 +766,11 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.bgsbred{
+  background: red;
+  color: white;
 }
 </style>
 

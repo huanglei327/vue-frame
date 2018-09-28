@@ -1,26 +1,27 @@
 
 <template>
-    <div>
-        <van-list v-model="loading" :finished="finished" :offset="100" @load="caonima">
-            <van-cell-group v-for="(item, index) in list" :key="index">
-                <van-cell @click="skipCreative(item.resolutionId,item.decisionId)">
-                    <van-row>
-                        <van-col span="20">
-                            <div class="wl_c">{{item.resolutionName}}</div>
-                            <van-row class="w_l_t">
-                                <van-col span="14">{{item.createTime}}</van-col>
-                                <van-col span="10">申请人:{{item.createUser}}</van-col>
-                            </van-row>
-                        </van-col>
-                        <van-col style="height:48px" span="4">
-                            {{item.statusStr}}
-                        </van-col>
-                    </van-row>
-                </van-cell>
-            </van-cell-group>
-        </van-list>
-        <div class="div-noshow" v-if="noDataShow">暂无数据</div>
-    </div>
+  <div>
+    <van-list v-model="loading" :finished="finished" :offset="100" @load="caonima">
+      <van-cell-group v-for="(item, index) in list" :key="index">
+        <van-cell @click="skipCreative(item.resolutionId,item.decisionId)">
+          <van-row>
+            <van-col span="20">
+              <div class="wl_c">{{item.resolutionName}}</div>
+              <div class="sizecor d-c-content">{{item.resolutionContent}}</div>
+              <van-row class="w_l_t">
+                <van-col span="14">{{item.createTime}}</van-col>
+                <van-col span="10">申请人:{{item.createUser}}</van-col>
+              </van-row>
+            </van-col>
+            <van-col style="height:48px" span="4">
+              {{item.statusStr}}
+            </van-col>
+          </van-row>
+        </van-cell>
+      </van-cell-group>
+    </van-list>
+    <div class="div-noshow" v-if="noDataShow">暂无数据</div>
+  </div>
 </template>
 
 <script>
@@ -57,12 +58,23 @@ export default {
       that.finished = true;
     },
     skipCreative(resolutionId, decisionId) {
+      if (resolutionId === null) {
+        this.$router.push({
+          path: "/DecisionDetails",
+          query: {
+            resolutionId: resolutionId,
+            decisionId: decisionId,
+            pageType: 'No'
+          }
+        });
+        return
+      }
       this.$router.push({
         path: "/CreativeDetails",
         query: {
           resolutionId: resolutionId,
           decisionId: decisionId,
-          pageType:'No'
+          pageType: 'No'
         }
       });
     }
@@ -72,22 +84,35 @@ export default {
 
 <style>
 .van-search--show-action {
-  padding-right: 15px;
+	padding-right: 15px;
 }
 .w_l_m {
-  font-size: 12px;
-  color: #666;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	font-size: 12px;
+	color: #666;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .w_l_t {
-  font-size: 12px;
-  color: #999;
+	font-size: 12px;
+	color: #999;
 }
 .wl_c {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.d-c-content {
+	line-height: 16px;
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+.sizecor {
+	font-size: 12px;
+	color: #666;
 }
 </style>

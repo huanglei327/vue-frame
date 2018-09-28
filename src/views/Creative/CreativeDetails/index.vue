@@ -74,7 +74,7 @@
               <van-row>
                 <van-col span="6">倒计时:</van-col>
                 <van-col span="18">
-                  <span class="colored">{{dicyTimes}}</span>
+                  <span class="colored">{{timesValue}}</span>
                 </van-col>
               </van-row>
             </div>
@@ -94,7 +94,7 @@
                   <van-col span="4">分数:</van-col>
                   <van-col span="12">
                     <van-rate v-model="item.resolutionScore" /></van-col>
-                  <van-col span="4">{{item.score}}分</van-col>
+                  <van-col span="4">{{item.resolutionScore}}分</van-col>
                 </van-row>
               </div>
               <div>
@@ -144,7 +144,12 @@
                   </van-col>
                 </van-row>
                 <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
-                  <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                  <van-col span="20" class="div-ff">
+
+                    <span v-if="listDtl.createUser === ff.createUser">提案人</span>
+                    <span v-else> {{ff.createUser}}</span>
+                    回复:{{ff.answerCentent}}
+                  </van-col>
                   <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
                     <div @click="showAnswer(item.quizId)" style="color:blue;line-height:30px;">回复</div>
                   </van-col>
@@ -186,11 +191,11 @@
         <van-cell-group>
           <van-field type="number" min="1" max="99" required clearable label="分数" placeholder="请输入分数1-10" v-model="psObj.resolutionScore" :error-message="psObj.resolutionScore_err" />
           <van-field type="textarea" maxlength="50" required clearable label="结论" placeholder="请输入结论，不超过50字" rows="1" autosize :error-message="psObj.resolutionConclusion_err" v-model="psObj.resolutionConclusion" />
-          <van-field type="textarea" maxlength="200" required clearable label="优点" placeholder="请在这里录入优点，提案名称不超过200个字" :error-message="psObj.resolutionMerit_err" v-model="psObj.resolutionMerit" rows="2" autosize />
-          <van-field type="textarea" maxlength="200" required clearable label="缺点" placeholder="请在这里录入优点，提案名称不超过200个字" rows="2" autosize :error-message="psObj.resolutionDefect_err" v-model="psObj.resolutionDefect" />
+          <van-field type="textarea" maxlength="200" required clearable label="优点" placeholder="请在这里录入优点,不超过200个字" :error-message="psObj.resolutionMerit_err" v-model="psObj.resolutionMerit" rows="2" autosize />
+          <van-field type="textarea" maxlength="200" required clearable label="缺点" placeholder="请在这里录入缺点,不超过200个字" rows="2" autosize :error-message="psObj.resolutionDefect_err" v-model="psObj.resolutionDefect" />
         </van-cell-group>
         <div class="div-btn">
-          <van-button type="primary" size="newlarge" @click="btnSavePs">发起评审
+          <van-button type="primary" size="newlarge" @click="btnSavePs">提交
           </van-button>
         </div>
       </div>
@@ -265,18 +270,22 @@ export default {
       tabtnShow: true,
       pageType: "",
       psList: [],
-      dicyTimes: '',
-      istiwenshow: true
+      dicyTimes: "",
+      istiwenshow: true,
+      userNameA: "",
+      timesValue: ''
     };
   },
   mounted() {
     const that = this;
+    that.userNameA = that.$common.getUserInfo("userName");
     that.resolutionId = that.$route.query.resolutionId;
     that.decisionId = that.$route.query.decisionId;
     that.currentName = that.$common.getUserInfo("userName");
     that.pageType = that.$route.query.pageType;
     if (that.pageType === "No") {
       that.tabtnShow = false;
+      that.scoreShow = true
     }
     that
       .getInit()
@@ -337,12 +346,12 @@ export default {
     },
     checkDiv() {
       const that = this;
-      console.log(that.listDtl.createUser)
-      console.log(that.$common.getUserInfo("userName"))
-      console.log('---')
+      console.log(that.listDtl.createUser);
+      console.log(that.$common.getUserInfo("userName"));
+      console.log("---");
       if (that.listDtl.createUser === that.$common.getUserInfo("userName")) {
         that.isShowFF = true;
-        that.tiwenShow = false
+        that.tiwenShow = false;
         // that.tabtnShow = false;
         that.istiwenshow = false;
       } else {
@@ -360,7 +369,7 @@ export default {
           resolve("something");
         };
         const param = {
-          resolutionId: that.$route.query.resolutionId,
+          resolutionId: that.$route.query.resolutionId
         };
 
         getResolutionInfoApi(param).then(c);
@@ -380,8 +389,8 @@ export default {
                 a.pictureName
               );
             }
-            if (that.listDtl.countDown !== null) {
-              that.dicyTimes = that.listDtl.countDown;
+            if (that.listDtl.countDown !== null && that.list.countDown !== "0") {
+              that.dicyTimes = that.$common.DateClculateA(that.listDtl.countDown);
               that.calculateDate(1);
             }
           } else {
@@ -419,7 +428,8 @@ export default {
       const that = this;
       let clock = window.setInterval(() => {
         //console.log("启动");
-        that.dicyTimes = that.$common.DateClculate(that.dicyTimes);
+        that.dicyTimes = that.$common.DateClculateB(that.dicyTimes, 1000);
+        that.timesValue = that.$common.DateClculate(that.dicyTimes)
       }, 1000);
       if (type === 2) {
         console.log("关闭");
@@ -459,7 +469,7 @@ export default {
     btnSaveTw() {
       const that = this;
       if (that.quizCentent.replace(/\s+/g, "") === "") {
-        that.$toast.fail('请输入提问的内容');
+        that.$toast.fail("请输入提问的内容");
         return;
       }
 
@@ -468,7 +478,7 @@ export default {
           that.$toast.success(res.errmsg);
           that.tiwenShow = false;
           that.show = false;
-          that.quizCentent = ''
+          that.quizCentent = "";
           that.getQui(that.resolutionId);
         } else {
           that.$toast.fail(res.errmsg);
@@ -485,6 +495,7 @@ export default {
     },
     btnSavePs() {
       const that = this;
+      that.tabtnShow = false;
       let checklist = [
         { domId: "resolutionMerit", msg: "请输入优点", valiType: "" },
         { domId: "resolutionDefect", msg: "请输入缺点", valiType: "" },
@@ -503,7 +514,9 @@ export default {
           that.$toast.success(res.errmsg);
           that.pingshenShow = !that.pingshenShow;
           that.show = false;
-          location.reload();
+          that.tabtnShow = false;
+          //location.reload();
+          that.$router.go(-1)
         } else {
           that.$toast.fail(res.errmsg);
           return;
@@ -527,7 +540,7 @@ export default {
     addAnswer() {
       const that = this;
       if (that.answerCentent.replace(/\s+/g, "") === "") {
-        that.$toast.fail('请输入回复的内容');
+        that.$toast.fail("请输入回复的内容");
         return;
       }
       const c = res => {
@@ -536,7 +549,7 @@ export default {
             message: "回复成功",
             duration: 2000
           });
-          that.answerCentent = ''
+          that.answerCentent = "";
           that.ffshow = !that.ffshow;
           that.getQui();
         }

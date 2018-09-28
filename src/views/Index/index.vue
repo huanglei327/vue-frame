@@ -2,7 +2,7 @@
   <div class="index">
     <div class="portrait-list">
       <div class="portrait-img"></div>
-      {{msg}}--{{userName}}
+      {{msg}}
     </div>
     <div class="index-bd">
       <div class="kind-list">
@@ -157,31 +157,32 @@ export default {
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this;
-    if (that.$route.query.status !== "1") {
-      that.$router.push({
-        path: "/BindUser",
-        query: {
-          token: that.$route.query.token
-        }
-      });
-    } else {
-      const userinfo = {
-        id: 1,
-        userName: decodeURI(that.$route.query.userName),
-        token: that.$route.query.token
-      };
-      localStorage.setItem("userInfo", JSON.stringify(userinfo));
-      that.init();
-    }
-    that.msg = JSON.stringify(that.$route.query);
+    // that.userName=that.$common.date
+    // if (that.$route.query.status !== "1") {
+    //   that.$router.push({
+    //     path: "/BindUser",
+    //     query: {
+    //       token: that.$route.query.token
+    //     }
+    //   });
+    // } else {
+    //   const userinfo = {
+    //     id: 1,
+    //     userName: decodeURI(that.$route.query.userName),
+    //     token: that.$route.query.token
+    //   };
+    //   localStorage.setItem("userInfo", JSON.stringify(userinfo));
+    //   that.init();
+    // }
+    //  that.msg = JSON.stringify(that.$route.query);
 
-    // const userinfo = {
-    //   id: 1,
-    //   userName: "谢二",
-    //   token: "456"
-    // };
-    // localStorage.setItem("userInfo", JSON.stringify(userinfo));
-    // that.init();
+    const userinfo = {
+      id: 1,
+      userName: "刘述卫",
+      token: "456"
+    };
+    localStorage.setItem("userInfo", JSON.stringify(userinfo));
+    that.init();
   },
   methods: {
     init() {
@@ -244,6 +245,14 @@ export default {
             path: "/ReviewList"
           });
         }
+        if(that.$route.query.remindtype==="decision"){
+           that.$router.push({
+            path: "/CreativeList",
+            query: {
+              decisionId: that.$route.query.decisionId
+            }
+          });
+        }
         if (that.$route.query.remindtype === "close") {
           that.$router.push({
             path: "/DecisionDetails",
@@ -281,7 +290,6 @@ export default {
         }
         localStorage.setItem("caodanStorage", "1");
       }
-      that.userName = localStorage.getItem("wocaonima")
     },
     kindToggle: function (id) {
       let list = this.list;
