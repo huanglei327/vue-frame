@@ -12,6 +12,8 @@
             <div class="d-c">
               {{list.decisionContent}}</div>
             <div v-if="list.countDown!==null" class=" colored">倒计时:{{timesValue}}</div>
+            <div v-if="list.countDown!==null" class=" colored">{{textValue}}</div>
+
             <div class="d-p">时间要求:{{list.closeTime}}天</div>
             <div class="d-p">提案人:{{list.decisionProposer}}</div>
             <div class="d-p">评审人:{{list.decisionAssessor}}</div>
@@ -33,7 +35,7 @@
         </div>
         <van-cell-group>
           <div v-if="talist.length>0">
-            <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)"  v-bind:class="{ 'bgsbred': index===0,  }">
+            <van-cell v-for="(item, index) in talist" :key="index" @click="skipCreative(item.resolutionId,item.decisionId)" v-bind:class="{'bgsbred':item.remarks==='1'}">
               <van-row>
                 <van-col span="20">
                   <div class="wl_c">{{item.resolutionName}}</div>
@@ -44,8 +46,7 @@
                 </van-col>
                 <van-col style="height:48px" span="4">
                   <div> {{item.statusStr}}</div>
-                   <div >{{item.score}}分</div>
-                  <div >{{item.score}}分</div>
+                  <div v-if="item.score!==0">{{item.score}}分</div>
                 </van-col>
               </van-row>
             </van-cell>
@@ -165,8 +166,10 @@
           <!-- <van-field :value="list.decisionName" required clearable label="创意提案名称" disabled /> -->
           <div>
             <van-row>
-              <van-col span="6" class="wdt-toux" style="text-align:center;"><div>创意提</div>
-              <div>案名称</div> </van-col>
+              <van-col span="6" class="wdt-toux" style="text-align:center;">
+                <div>创意提</div>
+                <div>案名称</div>
+              </van-col>
               <van-col span="18">{{list.decisionName}}</van-col>
             </van-row>
           </div>
@@ -240,6 +243,7 @@ export default {
       dicyTimes: "",
       timesValue: '',
       tiwenlistshow: true,
+      textValue: '超时未处理，系统默认自动参与',
     };
   },
   mounted() {
@@ -279,7 +283,7 @@ export default {
                 a.pictureName
               );
             }
-            if (that.list.countDown !== null && that.list.countDown!=="0") {
+            if (that.list.countDown !== null && that.list.countDown !== "0") {
               that.dicyTimes = that.$common.DateClculateA(that.list.countDown);
               that.calculateDate(1);
             }
@@ -297,8 +301,9 @@ export default {
         if (that.$route.query.deciType === "yicanyu") {
           param.queryType = 2;
         }
-        if (that.$route.query.deciType === "待结案") {
+        if (that.$route.query.statusStr === "待结案") {
           param.queryType = 3;
+          that.textValue = '超时未处理，系统将不能结案并扣除权重分，需联系管理员。'
         }
 
         GetdecisionMakingByIdApi(param).then(callback);
@@ -334,6 +339,7 @@ export default {
           that.noCshow = false;
           that.cshow = false;
           that.fqtaShow = true;
+          that.btntiwenShow = true;
         }
         if (that.list.createUser === that.$common.getUserInfo("userName")) {
           that.isShowFF = true;
@@ -360,7 +366,7 @@ export default {
           that.tianshow = false
           that.tiwenlistshow = false
         }
-        if(that.$route.query.statusStr==="yijiean"){
+        if (that.$route.query.statusStr === "yijiean") {
           that.cshow = false;
           that.btntiwenShow = false;
           that.noCshow = false;
@@ -442,7 +448,15 @@ export default {
         const c = res => {
           if (res.errcode === 0) {
             that.talist = res.data;
+            for (var i = 0; i < that.talist.length; i++) {
+              console.log(that.talist[i])
+              if (that.talist[i].score === that.talist[0].score) {
+                that.talist[i].remarks === '1'
+              }
+            }
+
           }
+
           resolve();
         };
         const param = {
@@ -457,6 +471,11 @@ export default {
         const c = res => {
           if (res.errcode === 0) {
             that.talist = res.data;
+            for (var i = 0; i < that.talist.length; i++) {
+              if (that.talist[i].score === that.talist[0].score && that.talist[0].score !== 0) {
+                that.talist[i].remarks = '1'
+              }
+            }
           }
         };
         const param = {
@@ -474,7 +493,7 @@ export default {
           if (res.errcode === 0) {
             that.tiwenlist = res.data;
             that.tiwenlist.forEach(item => {
-              if (item.createUser === that.$common.getUserInfo("userName") && (that.$route.query.type===0 || that.$route.query.type==='0')) {
+              if (item.createUser === that.$common.getUserInfo("userName") && (that.$route.query.type === 0 || that.$route.query.type === '0')) {
                 that.btntiwenShow = false;
               }
             });
@@ -768,9 +787,12 @@ export default {
 	white-space: nowrap;
 }
 
-.bgsbred{
-  background: red;
-  color: white;
+.bgsbred {
+	background: #f14545;
+	color: white;
+	.w_l_t {
+		color: white;
+	}
 }
 </style>
 

@@ -16,6 +16,7 @@ import ReviewList from '../views/Creative/ReviewList/index.vue'
 import OverInfo from '../views/OverInfo/index.vue'
 import OverList from '../views/OverList/index.vue'
 import ReviewDicyList from '../views/Creative/ReviewDicyList/index.vue'
+import EchartsInfo from '../views/EchartsInfo/index.vue'
 
 Vue.use(Router)
 
@@ -148,6 +149,14 @@ export default new Router({
       component: ReviewDicyList,
       meta:{
         title:'创意评审'
+      }
+    },
+    {
+      path: '/EchartsInfo',
+      name: 'EchartsInfo',
+      component: EchartsInfo,
+      meta:{
+        title:'Echarts'
       }
     }
   ]

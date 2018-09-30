@@ -121,7 +121,7 @@ export default {
       that.jcdisabled = true
       setTimeout(() => {
         that.jcdisabled = false
-      }, 1500);
+      }, 1800);
       let checklist = [
         { domId: "jcName", msg: "请输入决策名称", valiType: "" },
         { domId: "infoName", msg: "请选择决策分类", valiType: "" },
@@ -172,6 +172,7 @@ export default {
                   deciType: 'yicanyu'
                 }
               })
+              that.jcdisabled = false
             } else {
               that.$router.go(-1);
             }

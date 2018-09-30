@@ -7,6 +7,7 @@ import axios from 'axios'
 // axios 配置
 axios.defaults.timeout = 1000 * 60;
 axios.defaults.withCredentials = false
+import { Toast } from 'vant';
 
 axios.defaults.baseURL = `http://merit.dsunyun.com/`
 //axios.defaults.baseURL = 'api'
@@ -25,7 +26,7 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        
+        console.log(response)
         if (response.data.errorCode !== 0) {
             
         }

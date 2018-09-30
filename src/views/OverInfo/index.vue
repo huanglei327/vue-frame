@@ -21,94 +21,131 @@
           </div>
         </van-cell>
       </van-cell-group>
+      <div>
+        <div class="bg-white">
+          <div class="dd-wd">结案结果</div>
+        </div>
+
+        <div class="div-jainfo" style="background:white;padding:5px 10px;">
+          <div>
+            <van-row>
+              <van-col span="10">是否同意最优提案:</van-col>
+
+              <van-col span="14">
+                <span v-if="list.isConsent==='1'">是</span>
+                <span v-else>否</span>
+
+              </van-col>
+            </van-row>
+          </div>
+          <div>
+            <van-row style="margin-top:10px;">
+              <van-col span="4">原因:</van-col>
+              <van-col span="20">{{list.finalResolutionName}} </van-col>
+            </van-row>
+          </div>
+        </div>
+
+      </div>
       <div v-if="talistShow">
         <div class="bg-white">
           <div class="dd-wd">提案列表</div>
         </div>
-        <van-collapse  v-model="activeNames">
-          <van-collapse-item class="xlk" :title="item.resolutionName" :name="index" v-for="(item, index) in talist" :key="index" >
+        <van-collapse v-model="activeNames">
+          <van-collapse-item class="xlk" :name="index" v-for="(item, index) in talist" :key="index">
+            <div slot="title">
+              <van-row>
+                <van-col span="20">{{item.resolutionName}}</van-col>
+                <van-col span="4"  style=" line-height: 30px;font-size: 16px;color:red;">{{item.score}}分</van-col>
+              </van-row>
+            </div>
             <van-row>
-                <van-col span="24">
-                  <div class="wl_c">{{item.resolutionName}}</div>
-                  <div class="wl_cc">{{item.resolutionContent}}</div>
-                  <van-row class="w_l_t">
-                    <van-col span="14">{{item.createTime}}</van-col>
-                    <van-col span="10">申请人:{{item.createUser}}</van-col>
+              <van-col span="20">
+                <div class="wl_c">{{item.resolutionName}}</div>
+                <div class="wl_cc">{{item.resolutionContent}}</div>
+                <van-row class="w_l_t">
+                  <van-col span="14">{{item.createTime}}</van-col>
+                  <van-col span="10">申请人:{{item.createUser}}</van-col>
+                </van-row>
+              </van-col>
+            </van-row>
+            <div>
+              <div class="mx-title">
+                <span style="color: rgb(255, 210, 30);margin-right: 5px;">
+                  <van-icon name="exchange" />
+                </span>评审</div>
+              <div class="detailsx" v-for="(ritem,rindex) in item.resolutionDtlList" :key="rindex">
+                <div>
+                  <van-row>
+                    <van-col span="4">分数:</van-col>
+                    <van-col span="12">
+                      <van-rate v-model="ritem.resolutionScore" /></van-col>
+                    <van-col span="4">{{ritem.resolutionScore}}分</van-col>
                   </van-row>
-                </van-col>
-                
-              </van-row>
-              <div >
-                  <div class="mx-title"><span style="color: rgb(255, 210, 30);margin-right: 5px;"><van-icon name="exchange"/></span>评审</div>
-                   <div class="detailsx" v-for="(ritem,rindex) in item.resolutionDtlList" :key="rindex">
-            <div>
-              <van-row>
-                <van-col span="4">分数:</van-col>
-                <van-col span="12">
-                  <van-rate v-model="ritem.resolutionScore" /></van-col>
-                <van-col span="4">{{ritem.resolutionScore}}分</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">优点:</van-col>
-                <van-col span="18"> {{ritem.resolutionMerit}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">缺点:</van-col>
-                <van-col span="18"> {{ritem.resolutionDefect}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">结论:</van-col>
-                <van-col span="18">{{ritem.resolutionConclusion}}</van-col>
-              </van-row>
-            </div>
-            <div>
-              <van-row>
-                <van-col span="4">评审人:</van-col>
-                <van-col span="18">{{ritem.createUser}}</van-col>
-              </van-row>
-            </div>
-             <div>
-              <van-row>
-                <van-col span="4">评审时间:</van-col>
-                <van-col span="18">{{ritem.createTime}}</van-col>
-              </van-row>
-            </div>
-          </div>
+                </div>
+                <div>
+                  <van-row>
+                    <van-col span="4">优点:</van-col>
+                    <van-col span="18"> {{ritem.resolutionMerit}}</van-col>
+                  </van-row>
+                </div>
+                <div>
+                  <van-row>
+                    <van-col span="4">缺点:</van-col>
+                    <van-col span="18"> {{ritem.resolutionDefect}}</van-col>
+                  </van-row>
+                </div>
+                <div>
+                  <van-row>
+                    <van-col span="4">结论:</van-col>
+                    <van-col span="18">{{ritem.resolutionConclusion}}</van-col>
+                  </van-row>
+                </div>
+                <div>
+                  <van-row>
+                    <van-col span="4">评审人:</van-col>
+                    <van-col span="18">{{ritem.createUser}}</van-col>
+                  </van-row>
+                </div>
+                <div>
+                  <van-row>
+                    <van-col span="4">评审时间:</van-col>
+                    <van-col span="18">{{ritem.createTime}}</van-col>
+                  </van-row>
+                </div>
               </div>
+            </div>
             <div>
 
-               <div class="mx-title"><span style="color: rgb(255, 210, 30);margin-right: 5px;"><van-icon name="exchange"/></span>提问</div>
-       
-          <van-cell v-for="(qitem,qindex) in item.quizList" :key="qindex">
-            <div>
-              <van-row class="wdt-title">
-                <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
-                <van-col span="6">{{qitem.createUser}}</van-col>
-                <van-col span="12">{{qitem.createTime}}</van-col>
-              </van-row>
-              <van-row class="wd-f">
-                <van-col span="20">{{qitem.quizCentent}}</van-col>
-                <!-- <van-col span="4" class="ff" v-if="isShowFF">
+              <div class="mx-title">
+                <span style="color: rgb(255, 210, 30);margin-right: 5px;">
+                  <van-icon name="exchange" />
+                </span>提问</div>
+
+              <van-cell v-for="(qitem,qindex) in item.quizList" :key="qindex">
+                <div>
+                  <van-row class="wdt-title">
+                    <van-col span="4" class="wdt-toux"><img :src="toux"> </van-col>
+                    <van-col span="6">{{qitem.createUser}}</van-col>
+                    <van-col span="12">{{qitem.createTime}}</van-col>
+                  </van-row>
+                  <van-row class="wd-f">
+                    <van-col span="20">{{qitem.quizCentent}}</van-col>
+                    <!-- <van-col span="4" class="ff" v-if="isShowFF">
                   <div @click="showAnswer(qitem.quizId)">回复</div>
                 </van-col> -->
-              </van-row>
-              <!-- <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
+                  </van-row>
+                  <!-- <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex" class="div-ff">
                 {{ff.createUser}}回复:{{ff.answerCentent}}
               </div> -->
-              <div v-for="(ff,ffindex) in qitem.answerInfoList" :key="ffindex">
-                <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
-              </div>
-            </div>
-          </van-cell>
+                  <div v-for="(ff,ffindex) in qitem.answerInfoList" :key="ffindex">
+                    <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
+                  </div>
+                </div>
+              </van-cell>
             </div>
           </van-collapse-item>
-            </van-collapse>
+        </van-collapse>
         <van-cell-group>
         </van-cell-group>
       </div>
@@ -168,9 +205,9 @@
               </van-row>
               <van-row class="wd-f">
                 <van-col span="20">{{item.quizCentent}}</van-col>
-           
+
               </van-row>
-           
+
               <div v-for="(ff,ffindex) in item.answerInfoList" :key="ffindex">
                 <van-col span="20" class="div-ff">{{ff.createUser}}回复:{{ff.answerCentent}}</van-col>
                 <van-col span="4" class="ff" v-if="isAshowFF && ffindex+1 === item.answerInfoList.length">
@@ -187,7 +224,7 @@
       </van-cell-group>
 
     </div>
-   
+
   </div>
 </template>
 
@@ -235,7 +272,7 @@ export default {
               const a = res.data[0].pictureList[i];
               that.imgList.push(
                 "http://merit.dsunyun.com/m_decisionMaking/loadImage?fileName=" +
-                  a.pictureName
+                a.pictureName
               );
             }
             //that.checkDiv()
@@ -472,188 +509,188 @@ export default {
 </script>
 <style lang="less">
 .detailsInfo {
-  overflow-x: auto;
+	overflow-x: auto;
 }
 .detailsx {
-  border: 1px solid #e5e5e5e5;
-  border-radius: 10px;
-  padding: 5px;
-  background: white;
-  margin-bottom: 5px;
-  div {
-    //border-bottom: 1px solid #333;
-    line-height: 26px;
-  }
-  .d-t {
-    text-indent: 20px;
-  }
-  .d-c {
-    padding: 10px 0;
-    text-indent: 30px;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
-  }
-  .d-p {
-    font-size: 12px;
-    color: #666;
-  }
+	border: 1px solid #e5e5e5e5;
+	border-radius: 10px;
+	padding: 5px;
+	background: white;
+	margin-bottom: 5px;
+	div {
+		//border-bottom: 1px solid #333;
+		line-height: 26px;
+	}
+	.d-t {
+		text-indent: 20px;
+	}
+	.d-c {
+		padding: 10px 0;
+		text-indent: 30px;
+		border-top: 1px solid #e5e5e5;
+		border-bottom: 1px solid #e5e5e5;
+	}
+	.d-p {
+		font-size: 12px;
+		color: #666;
+	}
 }
 .xlk {
-  .van-collapse-item__content {
-    background: #e5e5e5;
-  }
+	.van-collapse-item__content {
+		background: #e5e5e5;
+	}
 }
 .de-bo {
-  position: fixed;
-  bottom: 0px;
-  margin-top: 10px;
-  width: 100%;
-  .van-button--small {
-    height: 45px;
-    line-height: 38px;
-    width: 33.3%;
-  }
-  .dflex {
-    display: flex;
-    height: 45px;
-    div {
-      width: 100%;
-      height: 45px;
-      line-height: 43px;
-      text-align: center;
-      color: white;
-    }
-    .b-red {
-      background: #f44;
-      //	border-radius: 5px 0 0 0;
-    }
-    .b-cheng {
-      background: #ff7f00;
-    }
-    .b-green {
-      //	border-radius: 0 5px 0 0;
-      background: rgb(77, 201, 46);
-    }
-  }
+	position: fixed;
+	bottom: 0px;
+	margin-top: 10px;
+	width: 100%;
+	.van-button--small {
+		height: 45px;
+		line-height: 38px;
+		width: 33.3%;
+	}
+	.dflex {
+		display: flex;
+		height: 45px;
+		div {
+			width: 100%;
+			height: 45px;
+			line-height: 43px;
+			text-align: center;
+			color: white;
+		}
+		.b-red {
+			background: #f44;
+			//	border-radius: 5px 0 0 0;
+		}
+		.b-cheng {
+			background: #ff7f00;
+		}
+		.b-green {
+			//	border-radius: 0 5px 0 0;
+			background: rgb(77, 201, 46);
+		}
+	}
 }
 .creative .van-field .van-cell__title {
-  max-width: 50px;
+	max-width: 50px;
 }
 .wdt-title {
-  .wdt-toux img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-  }
-  div {
-    height: 40px;
-    line-height: 40px;
-  }
+	.wdt-toux img {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+	}
+	div {
+		height: 40px;
+		line-height: 40px;
+	}
 }
 .wdt-c {
-  color: #666;
-  font-size: 12px;
+	color: #666;
+	font-size: 12px;
 }
 .dd-wd {
-  height: 40px;
-  line-height: 40px;
-  padding-left: 20px;
-  background: white;
-  color: white;
-  margin-top: 10px;
-  background: url(../../assets/images/bgcolor_sta02.png) no-repeat;
-  background-size: contain;
+	height: 40px;
+	line-height: 40px;
+	padding-left: 20px;
+	background: white;
+	color: white;
+	margin-top: 10px;
+	background: url(../../assets/images/bgcolor_sta02.png) no-repeat;
+	background-size: contain;
 }
 .wd-f {
-  word-wrap: break-word;
-  word-break: normal;
-  .ff {
-    text-align: center;
-    color: blue;
-  }
+	word-wrap: break-word;
+	word-break: normal;
+	.ff {
+		text-align: center;
+		color: blue;
+	}
 }
 .div-jainfo {
-  .van-col--6 {
-    text-align: right;
-    color: #666;
-    padding: 5px 10px 5px 0;
-  }
-  .van-col--18 {
-    padding: 5px 0;
-  }
-  .van-col--8 {
-    text-align: right;
-    color: #666;
-    padding: 5px 10px 5px 0;
-  }
-  .van-col--16 {
-    padding: 5px 0;
-  }
+	.van-col--6 {
+		text-align: right;
+		color: #666;
+		padding: 5px 10px 5px 0;
+	}
+	.van-col--18 {
+		padding: 5px 0;
+	}
+	.van-col--8 {
+		text-align: right;
+		color: #666;
+		padding: 5px 10px 5px 0;
+	}
+	.van-col--16 {
+		padding: 5px 0;
+	}
 }
 .w_l_m {
-  font-size: 12px;
-  color: #666;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	font-size: 12px;
+	color: #666;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .w_l_t {
-  font-size: 12px;
-  color: #999;
+	font-size: 12px;
+	color: #999;
 }
 .wl_cc {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #716d6d;
-  font-size: 12px;
-  line-height: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: #716d6d;
+	font-size: 12px;
+	line-height: 20px;
 }
 
 .mx-title {
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  border: 1px solid #e5e5e5;
-  text-indent: 3px;
-  margin: 5px 0;
-  background: white;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: 600;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #e5e5e5;
+	text-indent: 3px;
+	margin: 5px 0;
+	background: white;
+	border-radius: 5px;
+	font-size: 14px;
+	font-weight: 600;
 }
 .wdt-title {
-  .wdt-toux img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-  }
-  div {
-    height: 40px;
-    line-height: 40px;
-  }
+	.wdt-toux img {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+	}
+	div {
+		height: 40px;
+		line-height: 40px;
+	}
 }
 .wdt-c {
-  color: #666;
-  font-size: 12px;
+	color: #666;
+	font-size: 12px;
 }
 .dd-wd {
-  height: 40px;
-  line-height: 40px;
-  padding-left: 20px;
-  background: white;
-  color: white;
-  margin-top: 10px;
-  background: url(../../assets/images/bgcolor_sta02.png) no-repeat;
-  background-size: contain;
-  z-index: 2;
+	height: 40px;
+	line-height: 40px;
+	padding-left: 20px;
+	background: white;
+	color: white;
+	margin-top: 10px;
+	background: url(../../assets/images/bgcolor_sta02.png) no-repeat;
+	background-size: contain;
+	z-index: 2;
 }
 .wd-f {
-  word-wrap: break-word;
-  word-break: normal;
-  .ff {
-    text-align: center;
-    color: blue;
-  }
+	word-wrap: break-word;
+	word-break: normal;
+	.ff {
+		text-align: center;
+		color: blue;
+	}
 }
 </style>
 

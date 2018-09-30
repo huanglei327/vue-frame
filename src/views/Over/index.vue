@@ -17,7 +17,13 @@
                     <div class="van-field__error-message errmsg">{{status.infoName_err}}</div>
                 </template>
             </van-cell>-->
-            <van-field required label="最终结案" type="textarea" placeholder="请录入最优创意提案,不超过30个字" rows="1" autosize v-model="status.finalResolutionName" :error-message="status.finalResolutionName_err" />
+            <div style="padding:  5px 20px;display:  flex;">
+                <van-radio-group v-model="isConsent">
+                    <van-radio name="1" style="margin:10px 0;">同意最优创意提案 </van-radio>
+                    <van-radio name="2">不同意最优创意提案</van-radio>
+                </van-radio-group>
+            </div>
+            <van-field required label="原因" type="textarea" placeholder="请输入原因,不超过30个字" rows="1" autosize v-model="status.finalResolutionName" :error-message="status.finalResolutionName_err" />
         </van-cell-group>
 
         <div class="div-btn">
@@ -37,6 +43,7 @@ export default {
             reamrk: "新技术革命给我们带来了千载难逢的机遇，中国的制造业如果把握机会？我们的企业该怎么样通过数字化实现转型升级",
             value: '1',
             checked: true,
+            isConsent: '1',
             status: {
                 infoId: 0,
                 infoName: '',
@@ -45,7 +52,8 @@ export default {
                 finalResolutionName_err: '',
                 classifyPopup: false,
                 classifyTitle: '最优创意提案',
-                decisionId: 0
+                decisionId: 0,
+
             },
             list: {}
         }
@@ -88,7 +96,7 @@ export default {
         btnGoOver() {
             const that = this
             let checklist = [
-                { domId: 'finalResolutionName', msg: '最终结案', valiType: '' },
+                { domId: 'finalResolutionName', msg: '请输入原因', valiType: '' },
                 { domId: 'jcContent', msg: '请选择决策内容', valiType: '' },
             ]
 
@@ -99,7 +107,8 @@ export default {
                 decisionId: that.$route.query.decisionId,
                 finalResolutionName: that.status.finalResolutionName,
                 optimalResolutionName: that.list.optimalResolutionName,
-                updateUser: that.$common.getUserInfo("userName")
+                updateUser: that.$common.getUserInfo("userName"),
+                isConsent: that.isConsent
             }
             const callback = res => {
                 if (res.errcode === 0) {
@@ -109,7 +118,7 @@ export default {
                     });
                     setTimeout(() => {
                         that.$router.push({
-                            path: '/DecisionDetails',
+                            path: '/OverInfo',
                             query: {
                                 statusStr: 'yijiean',
                                 decisionId: this.$route.query.decisionId,

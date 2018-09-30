@@ -150,6 +150,21 @@ export default {
               bage: ""
             }
           ]
+        }, {
+          id: "5",
+          name: "多加个菜单",
+          open: false,
+          status: true,
+          src: temp7,
+          bage: "",
+          pages: [
+            {
+              tname: "菜单1",
+              url: "/EchartsInfo",
+              imgn: temp6,
+              bage: ""
+            }
+          ]
         }
       ]
     };
@@ -157,7 +172,7 @@ export default {
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this;
-    // that.userName=that.$common.date
+    // that.userName = that.$common.date
     // if (that.$route.query.status !== "1") {
     //   that.$router.push({
     //     path: "/BindUser",
@@ -174,11 +189,11 @@ export default {
     //   localStorage.setItem("userInfo", JSON.stringify(userinfo));
     //   that.init();
     // }
-    //  that.msg = JSON.stringify(that.$route.query);
+    // that.msg = JSON.stringify(that.$route.query);
 
     const userinfo = {
       id: 1,
-      userName: "刘述卫",
+      userName: "林璐茜",
       token: "456"
     };
     localStorage.setItem("userInfo", JSON.stringify(userinfo));
@@ -232,27 +247,71 @@ export default {
       if (that.$route.query.remindtype !== "") {
         localStorage.setItem("wocaonima", that.$route.query.remindtype)
 
-        if (that.$route.query.remindtype === "proposal") {
+        if (that.$route.query.remindtype === "proposal"
+          || that.$route.query.remindtype === 'decisionQuiz'
+          || that.$route.query.remindtype === "decisionAnswer"
+          || that.$route.query.remindtype === "decision") {
+          var type = 0
+          var deciType = ''
+          var isExistsResolution = ''
+          if (that.$route.query.isParticipationResolution === '1') {
+            type = 0
+            deciType = 'weicanyu'
+          }
+          else if (that.$route.query.isParticipationResolution === '2') {
+            type = 2
+            deciType = 'yicanyu'
+          }
+          else {
+            type = 2
+            isExistsResolution = '存在'
+          }
+
           that.$router.push({
-            path: "/CreativeList",
+            path: "/DecisionDetails",
             query: {
-              decisionId: that.$route.query.decisionId
+              decisionId: that.$route.query.decisionId,
+              type: type,
+              deciType: deciType,
+              isExistsResolution: isExistsResolution
             }
           });
         }
         if (that.$route.query.remindtype === "review") {
+          var type = 2
+          if (that.$route.query.isReview === '1') {
+            type = 1
+          }
           that.$router.push({
-            path: "/ReviewList"
-          });
-        }
-        if(that.$route.query.remindtype==="decision"){
-           that.$router.push({
-            path: "/CreativeList",
+            path: "/ReviewDicyList",
             query: {
-              decisionId: that.$route.query.decisionId
+              decisionId: that.$route.query.decisionId,
+              type: type
             }
           });
         }
+        if (that.$route.query.remindtype === "resolutionAnswer"
+          || that.$route.query.remindtype === "resolutionQuiz") {
+          that.$router.push({
+            path: "/CreativeDetails",
+            query: {
+              decisionId: that.$route.query.decisionId,
+              resolutionId: that.$route.query.resolutionId
+            }
+          });
+        }
+        // if(that.$route.query.remindtype === "resolutionAnswer"
+        //   || that.$route.query.remindtype === "resolutionQuiz"){
+
+        //   }
+        // if (that.$route.query.remindtype === "decision") {
+        //   that.$router.push({
+        //     path: "/CreativeList",
+        //     query: {
+        //       decisionId: that.$route.query.decisionId
+        //     }
+        //   });
+        // }
         if (that.$route.query.remindtype === "close") {
           that.$router.push({
             path: "/DecisionDetails",
@@ -262,32 +321,32 @@ export default {
             }
           });
         }
-        if (that.$route.query.remindtype === "decisionQuiz") {
-          that.$router.push({
-            path: "/CreativeList",
-            query: {
-              decisionId: that.$route.query.decisionId
-            }
-          });
-        }
-        if (that.$route.query.remindtype === "resolutionQuiz") {
-          that.$router.push({
-            path: "/ReviewList"
-          });
-        }
-        if (that.$route.query.remindtype === "decisionAnswer") {
-          that.$router.push({
-            path: "/CreativeList",
-            query: {
-              decisionId: that.$route.query.decisionId
-            }
-          });
-        }
-        if (that.$route.query.remindtype === "resolutionAnswer") {
-          that.$router.push({
-            path: "/ReviewList",
-          });
-        }
+        // if (that.$route.query.remindtype === "decisionQuiz") {
+        //   that.$router.push({
+        //     path: "/CreativeList",
+        //     query: {
+        //       decisionId: that.$route.query.decisionId
+        //     }
+        //   });
+        // }
+        // if (that.$route.query.remindtype === "resolutionQuiz") {
+        //   that.$router.push({
+        //     path: "/ReviewList"
+        //   });
+        // }
+        // if (that.$route.query.remindtype === "decisionAnswer") {
+        //   that.$router.push({
+        //     path: "/CreativeList",
+        //     query: {
+        //       decisionId: that.$route.query.decisionId
+        //     }
+        //   });
+        // }
+        // if (that.$route.query.remindtype === "resolutionAnswer") {
+        //   that.$router.push({
+        //     path: "/ReviewList",
+        //   });
+        // }
         localStorage.setItem("caodanStorage", "1");
       }
     },

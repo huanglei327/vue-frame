@@ -70,14 +70,7 @@
                 <van-col span="18">{{listDtl.createTime}}</van-col>
               </van-row>
             </div>
-            <div>
-              <van-row>
-                <van-col span="6">倒计时:</van-col>
-                <van-col span="18">
-                  <span class="colored">{{timesValue}}</span>
-                </van-col>
-              </van-row>
-            </div>
+            
             <ul class="up-img-ul">
               <li v-for="(item,index) in tianImgList" :key="index">
                 <img width="70px" height="90px" @click="imgPreviewTiAn(index)" :src="item">
@@ -389,10 +382,10 @@ export default {
                 a.pictureName
               );
             }
-            if (that.listDtl.countDown !== null && that.list.countDown !== "0") {
-              that.dicyTimes = that.$common.DateClculateA(that.listDtl.countDown);
-              that.calculateDate(1);
-            }
+            // if (that.listDtl.countDown !== null && that.list.countDown !== "0") {
+            //   that.dicyTimes = that.$common.DateClculateA(that.listDtl.countDown);
+            //   that.calculateDate(1);
+            // }
           } else {
           }
           resolve("something");

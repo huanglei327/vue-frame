@@ -7,6 +7,8 @@ import store from './store/index'
 import utilt from './utils/util'
 import * as validate_ from './utils/validate'//引用文件
 import * as common_ from './assets/js/common'
+import echarts from 'echarts'
+
 
 import {
   Button, Collapse, CollapseItem, Cell, CellGroup, NavBar, Icon, AddressEdit,
@@ -27,12 +29,14 @@ Vue.config.productionTip = false
 Vue.prototype.$checkVal = validate_
 Vue.prototype.$common = common_
 Vue.prototype.$TiXingStatus = false
+Vue.prototype.$echarts = echarts
 //Toast.allowMultiple()
 router.beforeEach((to, from, next) => {
   next()
 })
 router.afterEach((to, from, next) => {
-  if (to.name === "Index" && from.name!==null) {
+  if (to.name === "Index" && from.name !== null) {
+    to.query.access_token = to.query.remindtype
     to.query.remindtype = ""
   }
   if (to.path === '/') {

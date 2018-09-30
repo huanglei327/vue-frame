@@ -40,6 +40,16 @@
                     <van-col span="18">{{decisionInfo.createTime}}</van-col>
                 </van-row>
             </div>
+            <div class="colored" v-if="decisionInfo.countDown !== null && decisionInfo.countDown !== '0'">
+                <van-row>
+                    <van-col span="24"><span style="">倒计时:</span>{{timesValue}}</van-col>
+                </van-row>
+            </div>
+            <div class="colored" v-if="decisionInfo.countDown !== null && decisionInfo.countDown !== '0'">
+                <van-row>
+                    <van-col span="24">超时未处理，系统默认作废并扣除权重分</van-col>
+                </van-row>
+            </div>
             <ul class="up-img-ul">
                 <li v-for="(item,index) in tianImgList" :key="index">
                     <img width="70px" height="90px" @click="imgPreview(index)" :src="item">
@@ -61,7 +71,7 @@
                         <van-col span="8" class="status">决策状态:{{item.statusStr}}</van-col>
                     </van-row>
 
-                    <div v-if="item.score>0" class="div-score">{{item.score}}</div>
+                    <div v-if="item.score>0" class="div-score">{{item.score}}分</div>
                 </div>
             </van-cell>
 
@@ -90,7 +100,9 @@ export default {
             decisionInfo: {},
             noDataShow: false,
             noDataShow1: false,
-            tianImgList:[],
+            tianImgList: [],
+            timesValue: '',
+            dicyTimes: '',
             tlist: [
                 {
                     name: "未发起"
@@ -119,10 +131,16 @@ export default {
                             a.pictureName
                         );
                     }
+                    if (that.decisionInfo.countDown !== null && that.decisionInfo.countDown !== "0") {
+                        that.dicyTimes = that.$common.DateClculateA(that.decisionInfo.countDown);
+                        that.calculateDate(1);
+                    }
                 }
             }
             const param = {
-                decisionId: that.$route.query.decisionId
+                decisionId: that.$route.query.decisionId,
+                queryType: 4,
+                userName: that.$common.getUserInfo("userName")
             }
             GetdecisionMakingByIdApi(param).then(c)
         },
@@ -149,6 +167,18 @@ export default {
                 this.loading = false;
                 this.finished = true;
             }, 500);
+        },
+        calculateDate(type) {
+            const that = this;
+            let clock = window.setInterval(() => {
+                //console.log("启动");
+                that.dicyTimes = that.$common.DateClculateB(that.dicyTimes, 1000);
+                that.timesValue = that.$common.DateClculate(that.dicyTimes)
+            }, 1000);
+            if (type === 2) {
+                console.log("关闭");
+                window.clearInterval(clock);
+            }
         },
         tabsClick(index, title) {
             console.log(index, title);
@@ -223,17 +253,19 @@ export default {
 	}
 }
 .div-score {
-	background: url(../../../assets/images/score.png) no-repeat;
+	//background: url(../../../assets/images/score.png) no-repeat;
 	position: absolute;
-	width: 30px;
-	height: 30px;
+	width: 60px;
+	height: 60px;
 	/* background-size: contain; */
 	background-size: contain;
 	top: 0px;
-	right: 0px;
-	color: white;
+	right: -8px;
+	color: red;
 	text-align: center;
-	line-height: 30px;
+    line-height: 30px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 .details {
