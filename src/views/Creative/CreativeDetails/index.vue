@@ -39,7 +39,7 @@
           <div>
             <van-row>
               <van-col span="6">创建时间:</van-col>
-              <van-col span="18">{{listDtl.createTime}}</van-col>
+              <van-col span="18">{{list.createTime}}</van-col>
             </van-row>
           </div>
           <ul class="up-img-ul">

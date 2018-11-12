@@ -2,7 +2,7 @@
   <div class="index">
     <div class="portrait-list">
       <div class="portrait-img"></div>
-      {{msg}}
+       
     </div>
     <div class="index-bd">
       <div class="kind-list">
@@ -152,14 +152,20 @@ export default {
           ]
         }, {
           id: "5",
-          name: "多加个菜单",
+          name: "我的报表",
           open: false,
           status: true,
           src: temp7,
           bage: "",
           pages: [
             {
-              tname: "菜单1",
+              tname: "我的报表",
+              url: "",
+              imgn: temp6,
+              bage: ""
+            },
+            {
+              tname: "我的可信度",
               url: "/EchartsInfo",
               imgn: temp6,
               bage: ""
@@ -172,32 +178,32 @@ export default {
   //computed: { ...mapGetters(['msg']) },  //对应getters.技术中的msg
   mounted() {
     const that = this;
-    // that.userName = that.$common.date
-    // if (that.$route.query.status !== "1") {
-    //   that.$router.push({
-    //     path: "/BindUser",
-    //     query: {
-    //       token: that.$route.query.token
-    //     }
-    //   });
-    // } else {
-    //   const userinfo = {
-    //     id: 1,
-    //     userName: decodeURI(that.$route.query.userName),
-    //     token: that.$route.query.token
-    //   };
-    //   localStorage.setItem("userInfo", JSON.stringify(userinfo));
-    //   that.init();
-    // }
-    // that.msg = JSON.stringify(that.$route.query);
+    that.userName = that.$common.date
+    if (that.$route.query.status !== "1") {
+      that.$router.push({
+        path: "/BindUser",
+        query: {
+          token: that.$route.query.token
+        }
+      });
+    } else {
+      const userinfo = {
+        id: 1,
+        userName: decodeURI(that.$route.query.userName),
+        token: that.$route.query.token
+      };
+      localStorage.setItem("userInfo", JSON.stringify(userinfo));
+      that.init();
+    }
+    that.msg = JSON.stringify(that.$route.query);
 
-    const userinfo = {
-      id: 1,
-      userName: "林璐茜",
-      token: "456"
-    };
-    localStorage.setItem("userInfo", JSON.stringify(userinfo));
-    that.init();
+    // const userinfo = {
+    //   id: 1,
+    //   userName: "溜溜",
+    //   token: "456"
+    // };
+    // localStorage.setItem("userInfo", JSON.stringify(userinfo));
+    // that.init();
   },
   methods: {
     init() {

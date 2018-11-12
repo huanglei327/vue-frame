@@ -46,3 +46,8 @@ export function getPSInfoApi(param) {
     const apiName = '/m_resolution/query_assessor'
     return post(apiName, param)
 }
+
+export function getLDTInfoApi(param){
+  const apiName='/m_weightiness/query_weightiness'
+  return post(apiName,param)
+}
